@@ -113,7 +113,7 @@ export const staggerItem = {
 };
 
 export const springTransition = {
-  type: "spring",
+  type: 'spring',
   stiffness: 300,
   damping: 30,
 };

@@ -1,6 +1,6 @@
 /* src/index.css */
 
-@import "tailwindcss";
+@import 'tailwindcss';
 :root {
   --border: 240 5% 91%;
   --input: 240 5% 91%;
