@@ -4,7 +4,7 @@ import { Search } from 'lucide-react';
 import { motion } from 'framer-motion';
 import {
   fadeIn,
-  slideUp,
+  // slideUp,
   staggerContainer,
   staggerItem,
 } from '@/lib/framer-animations';
@@ -24,14 +24,23 @@ const regions = [
 ];
 
 const SummonerSearch = () => {
-  const [summonerName, setSummonerName] = useState('');
-  const [region, setRegion] = useState('na1');
+  const [summonerInput, setSummonerInput] = useState<string>("");
+  const [region, setRegion] = useState("kr");
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (summonerName.trim()) {
-      navigate(`/summoner/${region}/${summonerName}`);
+    const [summonerName, tag] = summonerInput.split("#");
+    if (!summonerName || !tag) {
+      alert("소환사이름#태그 형식으로 입력하세요.");
+      return;
+    }
+    if (summonerName && tag && region) {
+      navigate(
+        `summonerInfo?region=${region}&summonerName=${encodeURIComponent(
+          summonerName
+        )}&tag=${encodeURIComponent(tag)}`
+      );
     }
   };
 
@@ -69,31 +78,32 @@ const SummonerSearch = () => {
         className='glass-card relative mx-auto max-w-xl overflow-hidden rounded-xl p-1'
         variants={fadeIn}
       >
-        <div className='flex flex-col sm:flex-row'>
-          <div className='relative flex-1'>
+        <div className="flex flex-col sm:flex-row">
+          {/* region 선택 */}
+          <select
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
+            className="py-4 px-4 bg-transparent border-0 border-t sm:border-t-0 sm:border-l border-border text-sm focus:outline-none focus:ring-0"
+          >
+            {regions.map((region) => (
+              <option key={region.value} value={region.value}>
+                {region.label}
+              </option>
+            ))}
+          </select>
+          {/* 소환사이름#태그 입력창 */}
+          <div className="relative flex-1">
             <input
-              type='text'
-              placeholder='Enter summoner name...'
-              value={summonerName}
-              onChange={(e) => setSummonerName(e.target.value)}
-              className='w-full border-0 bg-transparent py-4 pr-12 pl-4 text-base focus:ring-0 focus:outline-none'
+              type="text"
+              placeholder="Enter summoner name..."
+              value={summonerInput}
+              onChange={(e) => setSummonerInput(e.target.value)}
+              className="w-full py-4 pl-4 pr-12 bg-transparent border-0 text-base focus:outline-none focus:ring-0"
             />
-            <Search className='text-muted-foreground absolute top-1/2 right-4 -translate-y-1/2 transform' />
+            <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
           </div>
 
-          <div className='flex flex-col sm:flex-row'>
-            <select
-              value={region}
-              onChange={(e) => setRegion(e.target.value)}
-              className='border-border border-0 border-t bg-transparent px-4 py-4 text-sm focus:ring-0 focus:outline-none sm:border-t-0 sm:border-l'
-            >
-              {regions.map((region) => (
-                <option key={region.value} value={region.value}>
-                  {region.label}
-                </option>
-              ))}
-            </select>
-
+          <div className="flex sm:flex-row flex-col">
             <button
               type='submit'
               className='bg-lol-blue hover:bg-lol-blue/90 px-6 py-4 font-medium text-white transition-colors focus:outline-none sm:px-8'
@@ -103,42 +113,6 @@ const SummonerSearch = () => {
           </div>
         </div>
       </motion.form>
-
-      <motion.div
-        className='text-muted-foreground mt-6 text-sm'
-        variants={slideUp}
-      >
-        Try searching for{' '}
-        <button
-          onClick={() => {
-            setSummonerName('Faker');
-            setRegion('kr');
-          }}
-          className='text-lol-blue hover:underline focus:outline-none'
-        >
-          Faker
-        </button>
-        ,{' '}
-        <button
-          onClick={() => {
-            setSummonerName('Bjergsen');
-            setRegion('na1');
-          }}
-          className='text-lol-blue hover:underline focus:outline-none'
-        >
-          Bjergsen
-        </button>
-        , or{' '}
-        <button
-          onClick={() => {
-            setSummonerName('Rekkles');
-            setRegion('euw1');
-          }}
-          className='text-lol-blue hover:underline focus:outline-none'
-        >
-          Rekkles
-        </button>
-      </motion.div>
     </motion.div>
   );
 };
