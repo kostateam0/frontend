@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import SummonerProfile from "../components/SummonerProfile";
+import MatchList from "../components/MatchListPage"; // ✅ 새로 추가
 
 // API 응답 데이터 타입 정의
 interface Summoner {
@@ -8,6 +9,7 @@ interface Summoner {
   summonerLevel: number;
   profileIconId: number;
   revisionDate: number;
+  puuid?: string;
 }
 
 interface ApiResponse {
@@ -53,11 +55,18 @@ const SummonerInfo = () => {
   if (!data) return <p>불러오는 중...</p>;
 
   return (
-    <div>
+    <div className="max-w-4xl mx-auto px-4 pt-24 pb-20">
+      {/* Summoner Profile */}
       <SummonerProfile
         summoner={data.user}
         summonerName={data.summonerName}
         tag={data.tag}
+      />
+
+      {/* Match List 컴포넌트 포함 */}
+      <MatchList
+        puuid={data.user.puuid!}
+        summonerName={data.summonerName}
       />
     </div>
   );

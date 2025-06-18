@@ -8,7 +8,7 @@ import SummonerInfo from "./pages/SummonerInfo";
 // import ChampionDetails from "./pages/ChampionDetails";
 // import NotFound from "./pages/NotFound";
 import { AnimatePresence } from 'framer-motion';
-import MatchListPage from './pages/MatchListPage';
+import MatchListPage from './components/MatchListPage';
 const queryClient = new QueryClient();
 
 const App = () => (
