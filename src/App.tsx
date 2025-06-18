@@ -8,7 +8,7 @@ import Index from './pages/Index';
 // import ChampionDetails from "./pages/ChampionDetails";
 // import NotFound from "./pages/NotFound";
 import { AnimatePresence } from 'framer-motion';
-
+import MatchListPage from './pages/MatchListPage';
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -19,6 +19,9 @@ const App = () => (
         <AnimatePresence mode='wait'>
           <Routes>
             <Route path='/' element={<Index />} />
+            <Route path="/matches/:region/:riotId" element={<MatchListPage />} />
+
+
             {/* <Route path="/summoner/:region/:name" element={<Summoner />} />
             <Route path="/champions/:id" element={<ChampionDetails />} /> */}
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
