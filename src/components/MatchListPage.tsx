@@ -15,32 +15,33 @@ const MatchListPage = ({ puuid, summonerName }: MatchListProps) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (puuid) {
-      fetch(`http://localhost:3000/api/summoner/${puuid}/matches?count=20`)
-        .then(res => res.json())
-        .then(async ({ matchIds }) => {
-          const fetchedMatches = await Promise.all(
-            matchIds.map((id: string) =>
-              fetch(`http://localhost:3000/api/match/${id}`).then(res => res.json())
-            )
-          );
-          setMatches(
-            fetchedMatches.map(match => ({
-              ...match,
-              puuid,
-              summonerName,
-            }))
-          );
-        })
-        .catch(err => {
-          console.error("매치 정보 실패:", err);
-          setError("매치 정보를 불러올 수 없습니다.");
-        });
-    }
+    if (!puuid) return;
+
+    const loadMatches = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/match/full/${puuid}?count=20`);
+        const data = await res.json();
+
+        if (!res.ok || !data.matches) {
+          throw new Error("매치 정보 로딩 실패");
+        }
+
+        const validMatches = data.matches
+          .filter((match: any) => match !== null)
+          .map((match: any) => ({ ...match, puuid, summonerName }));
+
+        setMatches(validMatches);
+      } catch (err) {
+        console.error("전체 매치 로딩 실패:", err);
+        setError("매치 정보를 불러오는 중 오류가 발생했습니다.");
+      }
+    };
+
+    loadMatches();
   }, [puuid]);
 
   if (error) return <p className="text-red-500">{error}</p>;
-  if (!matches.length) return <p>최근 매치를 불러오는 중...</p>;
+  if (!matches.length) return <p>🔄 최근 매치를 불러오는 중...</p>;
 
   return (
     <div className="mt-12">
@@ -64,6 +65,36 @@ const MatchListPage = ({ puuid, summonerName }: MatchListProps) => {
               p.puuid === match.puuid
           );
 
+          if (!match.info || !match.info.participants) {
+            return (
+              <motion.div
+                key={match.metadata?.matchId ?? idx}
+                variants={fadeIn}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="glass-card rounded-xl p-4 text-gray-500 text-center"
+              >
+                🔄 매치 정보를 불러오는 중...
+              </motion.div>
+            );
+          }
+
+          if (!participant) {
+            return (
+              <motion.div
+                key={match.metadata?.matchId ?? idx}
+                variants={fadeIn}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className="glass-card rounded-xl p-4 text-red-600 text-center bg-red-100"
+              >
+                ❌ 유저 정보를 찾을 수 없습니다.
+              </motion.div>
+            );
+          }
+
           return (
             <motion.div
               key={match.metadata?.matchId ?? idx}
@@ -78,7 +109,7 @@ const MatchListPage = ({ puuid, summonerName }: MatchListProps) => {
                 onClick={() => setExpandedIndex(idx === expandedIndex ? null : idx)}
               />
               {expandedIndex === idx && (
-                <MatchDetail data={{ user: { puuid: participant?.puuid ?? match.puuid }, match }} />
+                <MatchDetail data={{ user: { puuid: participant.puuid }, match }} />
               )}
             </motion.div>
           );

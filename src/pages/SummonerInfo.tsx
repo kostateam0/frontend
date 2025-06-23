@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import SummonerProfile from "../components/SummonerProfile";
-import MatchList from "../components/MatchListPage"; // ✅ 새로 추가
+import MatchList from "../components/MatchListPage";
 
-// API 응답 데이터 타입 정의
+// props로 region, summonerName, tag 받음
+interface Props {
+  region: string;
+  summonerName: string;
+  tag: string;
+}
+
 interface Summoner {
   name: string;
   summonerLevel: number;
@@ -18,12 +23,7 @@ interface ApiResponse {
   tag: string;
 }
 
-const SummonerInfo = () => {
-  const [params] = useSearchParams();
-  const summonerName = params.get("summonerName") || "";
-  const tag = params.get("tag") || "";
-  const region = params.get("region") || "";
-
+const SummonerInfo = ({ region, summonerName, tag }: Props) => {
   const [data, setData] = useState<ApiResponse | null>(null);
   const [error, setError] = useState<string>("");
 
@@ -51,11 +51,11 @@ const SummonerInfo = () => {
     }
   }, [summonerName, tag, region]);
 
-  if (error) return <p>{error}</p>;
-  if (!data) return <p>불러오는 중...</p>;
+  if (error) return <p className="text-red-500 text-center mt-6">{error}</p>;
+  if (!data) return <p className="text-gray-500 text-center mt-6">불러오는 중...</p>;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 pt-24 pb-20">
+    <div className="max-w-4xl mx-auto px-4 pt-12 pb-20">
       {/* Summoner Profile */}
       <SummonerProfile
         summoner={data.user}
@@ -63,7 +63,7 @@ const SummonerInfo = () => {
         tag={data.tag}
       />
 
-      {/* Match List 컴포넌트 포함 */}
+      {/* Match List */}
       <MatchList
         puuid={data.user.puuid!}
         summonerName={data.summonerName}

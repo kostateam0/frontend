@@ -9,6 +9,7 @@ import SummonerInfo from "./pages/SummonerInfo";
 // import NotFound from "./pages/NotFound";
 import { AnimatePresence } from 'framer-motion';
 import MatchListPage from './components/MatchListPage';
+// import Feed from "./pages/Index"
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -19,12 +20,14 @@ const App = () => (
         <AnimatePresence mode='wait'>
           <Routes>
 
-            <Route path="/matches/:region/:riotId" element={<MatchListPage />} />
+            {/* <Route path="/matches/:region/:riotId" element={<MatchListPage />} /> */}
 
             {/* <Route path="/summoner/:region/:name" element={<Summoner />} />
             <Route path="/champions/:id" element={<ChampionDetails />} /> */}
             <Route path="/" element={<Index />} />
-            <Route path="/summonerInfo" element={<SummonerInfo />} />
+            {/* <Route path="/summonerInfo" element={<SummonerInfo />} /> */}
+            
+            {/* <Route path="/feed" element={<Feed />} /> */}
             {/* <Route path="/champions/:id" element={<ChampionDetails />} /> */}
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

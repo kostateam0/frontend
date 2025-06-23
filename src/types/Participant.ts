@@ -1,6 +1,8 @@
-// types/Participant.ts
 export interface Participant {
+  puuid: string;
   summonerName: string;
+  riotIdGameName?: string;   // ✅ Riot ID 이름
+  riotIdTagline?: string;    // ✅ Riot ID 태그
   championName: string;
   kills: number;
   deaths: number;
@@ -21,5 +23,5 @@ export interface Participant {
   timePlayed: number;
   summoner1Id: number;
   summoner2Id: number;
-  puuid: string;
+  teamId: number;
 }
