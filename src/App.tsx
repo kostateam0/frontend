@@ -21,14 +21,16 @@ const App = () => (
         <AnimatePresence mode='wait'>
           <Routes>
 
-            <Route path="/matches/:region/:riotId" element={<MatchListPage />} />
+            {/* <Route path="/matches/:region/:riotId" element={<MatchListPage />} /> */}
 
             <Route path='/' element={<Index />} />
             <Route path='/leaderboard' element={<LeaderBoardPage />} />
             {/* <Route path="/summoner/:region/:name" element={<Summoner />} />
             <Route path="/champions/:id" element={<ChampionDetails />} /> */}
             <Route path="/" element={<Index />} />
-            <Route path="/summonerInfo" element={<SummonerInfo />} />
+            {/* <Route path="/summonerInfo" element={<SummonerInfo />} /> */}
+            
+            {/* <Route path="/feed" element={<Feed />} /> */}
             {/* <Route path="/champions/:id" element={<ChampionDetails />} /> */}
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

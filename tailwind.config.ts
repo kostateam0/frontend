@@ -21,6 +21,9 @@ const config: Config = {
         popover: 'hsl(var(--popover))',
         card: 'hsl(var(--card))',
       },
+      fontFamily: {
+        comic: ['"Comic Neue"', 'cursive'],
+      },
     },
   },
   //   plugins: [animate],

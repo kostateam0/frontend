@@ -2,7 +2,15 @@ import { motion } from 'framer-motion';
 import { fadeIn } from '@/lib/framer-animations';
 
 const MatchSummaryCard = ({ match, onClick }: { match: any; onClick: () => void }) => {
-  const me = match.info?.participants?.find(
+  if (!match?.info || !match?.info?.participants) {
+    return (
+      <div className="p-4 bg-red-100 rounded-md">
+        <p className="text-red-600 font-semibold">유저 정보를 찾을 수 없습니다.</p>
+      </div>
+    );
+  }
+
+  const me = match.info.participants.find(
     (p: any) =>
       p.summonerName?.toLowerCase() === match.summonerName?.toLowerCase() ||
       p.puuid === match.puuid
@@ -19,6 +27,9 @@ const MatchSummaryCard = ({ match, onClick }: { match: any; onClick: () => void 
   const cs = me.totalMinionsKilled + me.neutralMinionsKilled;
   const gameMinutes = Math.round(match.info.gameDuration / 60);
   const resultColor = me.win ? 'bg-blue-100' : 'bg-red-100';
+  const riotId = me.riotIdGameName && me.riotIdTagline
+    ? `${me.riotIdGameName}#${me.riotIdTagline}`
+    : match.summonerName || '알 수 없음';
 
   return (
     <motion.div
@@ -33,7 +44,8 @@ const MatchSummaryCard = ({ match, onClick }: { match: any; onClick: () => void 
           className="w-12 h-12 rounded-md"
         />
         <div>
-          <p className="font-semibold">{me.championName}</p>
+          <p className="font-semibold">{riotId}</p>
+          <p className="text-sm text-gray-600">{me.championName}</p>
           <p className="text-sm text-gray-600">
             {me.kills} / {me.deaths} / {me.assists}
           </p>

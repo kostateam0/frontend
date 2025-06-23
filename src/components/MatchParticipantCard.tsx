@@ -1,69 +1,107 @@
+import React from 'react';
+
+interface Props {
+  summonerName: string;
+  riotId: string;
+  championName: string;
+  kills: number;
+  deaths: number;
+  assists: number;
+  totalDamageDealtToChampions: number;
+  teamPosition: string;
+  win: boolean;
+  itemIds: number[];
+  summonerLevel: number;
+  cs: number;
+  timePlayed: number;
+  spell1Id: number;
+  spell2Id: number;
+  isMe: boolean;
+  opponentName?: string;
+  teamId: number; // ✅ 반드시 있어야 함
+}
+
+
 const getSpellImage = (id: number) => {
   const spellMap: Record<number, string> = {
     4: "SummonerFlash",
     14: "SummonerDot",
     7: "SummonerHeal",
     11: "SummonerSmite",
-    // 필요한 스펠 추가 가능
+    3: "SummonerExhaust",
+    21: "SummonerBarrier",
+    6: "SummonerHaste",
+    12: "SummonerTeleport",
+    1: "SummonerBoost",
   };
   const name = spellMap[id];
   return name ? `https://ddragon.leagueoflegends.com/cdn/15.11.1/img/spell/${name}.png` : '';
 };
 
 const MatchParticipantCard = ({
-  summonerName = 'Unknown',
-  championName = 'Aatrox',
-  kills = 0,
-  deaths = 0,
-  assists = 0,
-  totalDamageDealtToChampions = 0,
-  teamPosition = '',
-  win = false,
-  itemIds = [],
-  summonerLevel = 0,
-  cs = 0,
-  timePlayed = 1,
+  summonerName,
+  riotId,
+  championName,
+  kills,
+  deaths,
+  assists,
+  totalDamageDealtToChampions,
+  teamPosition,
+  win,
+  itemIds,
+  summonerLevel,
+  cs,
+  timePlayed,
   spell1Id,
   spell2Id,
-  isMe = false,
-}: any) => {
+  isMe,
+  opponentName,
+}: Props) => {
   const csPerMin = (cs / (timePlayed / 60)).toFixed(1);
+  const kda = deaths === 0 ? 'Perfect' : ((kills + assists) / deaths).toFixed(2);
+  const colorClass = win ? 'bg-blue-50 border-l-4 border-blue-300' : 'bg-red-50 border-l-4 border-red-300';
 
   return (
-    <div className={`rounded-lg p-4 ${win ? 'border-l-4 border-green-400' : 'border-l-4 border-red-400'} ${isMe ? 'bg-yellow-50' : ''}`}>
-      <div className="flex items-center gap-4">
-        <img
-          src={`https://ddragon.leagueoflegends.com/cdn/15.11.1/img/champion/${championName}.png`}
-          className="w-12 h-12"
-          alt={championName}
-        />
-        <div>
-          <p className="font-bold">{summonerName}</p>
-          <p className="text-sm text-gray-500">{kills}/{deaths}/{assists} | 딜: {totalDamageDealtToChampions}</p>
-          <p className="text-xs text-gray-400">CS {cs} ({csPerMin}/분)</p>
+    <div className={`w-full rounded-md p-3 text-xs sm:text-sm flex flex-col gap-2 ${colorClass} ${isMe ? 'ring-2 ring-yellow-400' : ''}`}>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <img
+            src={`https://ddragon.leagueoflegends.com/cdn/15.11.1/img/champion/${championName}.png`}
+            className="w-10 h-10 rounded"
+            alt={championName}
+          />
+          <div className="flex flex-col min-w-0">
+            <div className="font-semibold truncate">{summonerName}</div>
+            <div className="text-[11px] text-gray-400 truncate">{riotId}</div> {/* ✅ Riot ID 출력 추가 */}
+            <div className="text-gray-500 text-xs">
+              {kills}/{deaths}/{assists} | KDA {kda}
+            </div>
+            <div className="text-gray-400 text-[11px]">
+              CS {cs} ({csPerMin}/분), 레벨 {summonerLevel}
+            </div>
+            <div className="text-gray-400 text-[11px]">
+              딜량 {totalDamageDealtToChampions.toLocaleString()} 
+            </div>
+          </div>
         </div>
         <div className="flex flex-col gap-1">
-          {spell1Id && <img src={getSpellImage(spell1Id)} className="w-6 h-6" alt="spell1" />}
-          {spell2Id && <img src={getSpellImage(spell2Id)} className="w-6 h-6" alt="spell2" />}
+          {spell1Id && <img src={getSpellImage(spell1Id)} className="w-5 h-5" alt="spell1" />}
+          {spell2Id && <img src={getSpellImage(spell2Id)} className="w-5 h-5" alt="spell2" />}
         </div>
       </div>
 
-      <div className="flex gap-1 mt-2">
-        {itemIds && itemIds.length > 0 ? (
-          itemIds.map((id: number, i: number) =>
-            id ? (
-              <img
-                key={i}
-                src={`https://ddragon.leagueoflegends.com/cdn/15.11.1/img/item/${id}.png`}
-                className="w-6 h-6"
-                alt={`item-${id}`}
-              />
-            ) : (
-              <div key={i} className="w-6 h-6 bg-gray-300 rounded" />
-            )
+      <div className="flex flex-wrap gap-1 mt-1">
+        {itemIds.map((id, i) =>
+          id ? (
+            <img
+              key={i}
+              src={`https://ddragon.leagueoflegends.com/cdn/15.11.1/img/item/${id}.png`}
+              className="w-6 h-6"
+              alt={`item-${id}`}
+            />
+          ) : (
+            <div key={i} className="w-6 h-6 bg-gray-200 rounded" />
           )
-        ) : (
-          <div className="text-sm text-gray-400">아이템 없음</div>
         )}
       </div>
     </div>
