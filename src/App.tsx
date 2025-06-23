@@ -9,7 +9,8 @@ import SummonerInfo from "./pages/SummonerInfo";
 // import NotFound from "./pages/NotFound";
 import { AnimatePresence } from 'framer-motion';
 import MatchListPage from './components/MatchListPage';
-// import Feed from "./pages/Index"
+import LeaderBoardPage from './pages/LeaderBoardPage';
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -22,6 +23,8 @@ const App = () => (
 
             {/* <Route path="/matches/:region/:riotId" element={<MatchListPage />} /> */}
 
+            <Route path='/' element={<Index />} />
+            <Route path='/leaderboard' element={<LeaderBoardPage />} />
             {/* <Route path="/summoner/:region/:name" element={<Summoner />} />
             <Route path="/champions/:id" element={<ChampionDetails />} /> */}
             <Route path="/" element={<Index />} />
