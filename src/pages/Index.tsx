@@ -14,12 +14,6 @@ import {
   User,
   Settings
 } from "lucide-react"
-import SummonerInfo from './SummonerInfo';
-import Header from '@/components/Header';
-
-import { NewFeedButton } from '@/components/feed/NewFeedButton';
-import FeedList from '@/components/feed/FeedList';
-
 
 const Index = () => {
   const [activeView, setActiveView] = useState<'feed' | 'search' | 'settings'>('feed')
