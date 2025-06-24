@@ -1,11 +1,31 @@
-// src/pages/RegisterPage.tsx
-
 import { useState } from "react";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const handleRegister = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/authkit/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password, name }),
+      });
+
+      if (!res.ok) throw new Error("회원가입 실패");
+
+      setSuccess(true);
+      setError("");
+    } catch (err) {
+      setError("회원가입 실패: 다시 시도해주세요.");
+      setSuccess(false);
+      console.error(err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#fff7b1] flex justify-center items-center p-6">
@@ -18,6 +38,7 @@ const RegisterPage = () => {
         {/* 우측 폼 영역 */}
         <div className="w-full md:w-1/2 p-10 space-y-5 text-black">
           <h2 className="text-3xl font-extrabold text-center">귀염뽀짝 트롤 가입</h2>
+
           <input
             className="w-full p-3 border-2 border-black rounded-full text-sm placeholder-gray-500"
             placeholder="이름을 입력해주세요"
@@ -39,25 +60,25 @@ const RegisterPage = () => {
           />
 
           {/* 가입 버튼 */}
-          <button className="w-full bg-[#00cc66] hover:bg-[#00b35a] text-white font-bold py-2 rounded-full border-2 border-black transition">
+          <button
+            className="w-full bg-[#00cc66] hover:bg-[#00b35a] text-white font-bold py-2 rounded-full border-2 border-black transition"
+            onClick={handleRegister}
+          >
             🚀 가입하기
           </button>
 
-          {/* 소셜 로그인 */}
-          <div className="space-y-2 pt-4">
-            <button className="w-full flex items-center justify-center bg-white border-2 border-black rounded-full py-2 hover:bg-gray-100">
-              <img src="/assets/google.svg" alt="Google" className="w-5 h-5 mr-2" />
-              Google로 가입
-            </button>
-            <button className="w-full flex items-center justify-center bg-[#03c75a] text-white border-2 border-black rounded-full py-2 hover:bg-[#02b24f]">
-              <img src="/assets/naver.svg" alt="Naver" className="w-5 h-5 mr-2" />
-              Naver로 가입
-            </button>
-          </div>
+          {/* 메시지 출력 */}
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          {success && <p className="text-green-600 text-sm text-center">회원가입이 완료되었습니다!</p>}
 
           {/* 하단 링크 */}
           <div className="text-center pt-4 text-xs">
-            <p>이미 계정이 있으신가요? <a href="/login" className="underline">로그인 하기</a></p>
+            <p>
+              이미 계정이 있으신가요?{" "}
+              <a href="/login" className="underline">
+                로그인 하기
+              </a>
+            </p>
           </div>
         </div>
       </div>
