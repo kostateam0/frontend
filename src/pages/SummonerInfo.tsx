@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import SummonerProfile from "../components/SummonerProfile";
-import MatchList from "../components/MatchListPage";
+import { useEffect, useState } from 'react';
+import SummonerProfile from '../components/SummonerProfile';
+import MatchList from '../components/MatchListPage';
+import SummonerChampMastery from '../components/SummonerChampMastery';
 
 // props로 region, summonerName, tag 받음
 interface Props {
@@ -25,7 +26,7 @@ interface ApiResponse {
 
 const SummonerInfo = ({ region, summonerName, tag }: Props) => {
   const [data, setData] = useState<ApiResponse | null>(null);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,13 +36,14 @@ const SummonerInfo = ({ region, summonerName, tag }: Props) => {
         url.searchParams.append("tag", tag);
         url.searchParams.append("region", region);
 
+
         const res = await fetch(url.toString());
-        if (!res.ok) throw new Error("API 호출 실패");
+        if (!res.ok) throw new Error('API 호출 실패');
 
         const json: ApiResponse = await res.json();
         setData(json);
       } catch (err) {
-        setError("소환사 정보를 불러올 수 없습니다.");
+        setError('소환사 정보를 불러올 수 없습니다.');
         console.error(err);
       }
     };
@@ -51,11 +53,12 @@ const SummonerInfo = ({ region, summonerName, tag }: Props) => {
     }
   }, [summonerName, tag, region]);
 
-  if (error) return <p className="text-red-500 text-center mt-6">{error}</p>;
-  if (!data) return <p className="text-gray-500 text-center mt-6">불러오는 중...</p>;
+  if (error) return <p className='mt-6 text-center text-red-500'>{error}</p>;
+  if (!data)
+    return <p className='mt-6 text-center text-gray-500'>불러오는 중...</p>;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 pt-12 pb-20">
+    <div className='mx-auto max-w-4xl px-4 pt-12 pb-20'>
       {/* Summoner Profile */}
       <SummonerProfile
         summoner={data.user}
@@ -63,11 +66,13 @@ const SummonerInfo = ({ region, summonerName, tag }: Props) => {
         tag={data.tag}
       />
 
-      {/* Match List */}
-      <MatchList
+      {/* Summoner Champion Mastery */}
+      <SummonerChampMastery
         puuid={data.user.puuid!}
         summonerName={data.summonerName}
       />
+      {/* Match List */}
+      <MatchList puuid={data.user.puuid!} summonerName={data.summonerName} />
     </div>
   );
 };
