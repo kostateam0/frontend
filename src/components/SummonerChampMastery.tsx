@@ -17,7 +17,7 @@ const SummonerChampMastery = ({ puuid, summonerName }: MasteryProps) => {
     const fetchMasteries = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/api/summoner/${puuid}/masteries`,
+          `http://localhost:4000/api/summoner/${puuid}/masteries`,
         );
         if (!res.ok) throw new Error('마스터리 정보 로딩 실패');
 

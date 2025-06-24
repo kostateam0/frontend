@@ -1,6 +1,8 @@
 // components/Header.tsx
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { NewFeedButton } from "./feed/NewFeedButton";
+
 
 const Header = () => {
   const [user, setUser] = useState<{ email: string } | null>(null);
@@ -38,7 +40,8 @@ const Header = () => {
             <button onClick={handleLogout} className="text-sm text-gray-500 hover:text-red-500">로그아웃</button>
           </div>
         ) : (
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center justify-center">
+            <NewFeedButton />
             <Link to="/login" className="text-sm text-purple-600 font-medium">로그인</Link>
             <Link to="/register" className="text-sm text-purple-600 font-medium">회원가입</Link>
           </div>

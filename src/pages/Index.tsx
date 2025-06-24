@@ -14,6 +14,12 @@ import {
   User,
   Settings
 } from "lucide-react"
+import SummonerInfo from './SummonerInfo';
+import Header from '@/components/Header';
+
+import { NewFeedButton } from '@/components/feed/NewFeedButton';
+import FeedList from '@/components/feed/FeedList';
+
 
 const Index = () => {
   const [activeView, setActiveView] = useState<'feed' | 'search' | 'settings'>('feed')
@@ -100,6 +106,7 @@ const Index = () => {
             {/* 푸터 */}
             <div className="mt-auto opacity-10 text-center text-xs text-[#4A6741]">© DarkTroll</div>
           </div>
+
         </aside>
 
         {/* 중앙 영역 */}
@@ -111,6 +118,7 @@ const Index = () => {
                   <div className='text-sm text-gray-400'>다음 경기</div>
                   <div className='mt-1 font-semibold text-[#E0E0E0]'>T1 vs Gen.G - 오늘 오후 7시</div>
                 </div>
+
                 <div className='rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 shadow-md'>
                   <div className='text-sm text-gray-400'>🎯 베팅 이벤트</div>
                   <div className='mt-1 font-semibold text-[#8B6914]'>승부 예측하고 보상 받기</div>
@@ -125,6 +133,7 @@ const Index = () => {
                   ))}
                 </div>
               </div>
+
             )}
 
             {activeView === 'search' && (
