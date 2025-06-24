@@ -14,7 +14,7 @@ import {
 
 const fetchLeaderBoard = async () => {
   const response = await fetch(
-    'http://localhost:3000/api/lol/leaderboard/load',
+    'http://localhost:4000/api/lol/leaderboard/load',
   );
   if (!response.ok) {
     throw new Error('Network response was not ok');
@@ -96,9 +96,7 @@ export default function LeaderBoardPage() {
       <div className='space-y-2'>
         {!leaderboardDate && (
           <div className='flex items-center justify-center py-8'>
-            <span className='text-slate-500'>
-              데이터가 없습니다.
-            </span>
+            <span className='text-slate-500'>데이터가 없습니다.</span>
           </div>
         )}
         {leaderboardDate &&

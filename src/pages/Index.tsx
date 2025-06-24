@@ -1,10 +1,12 @@
 // pages/Index.tsx
 
-import React, { useState } from "react";
-import SummonerSearch from "../components/SummonerSearch";
-import SummonerInfo from "./SummonerInfo"; 
-import Header from "@/components/Header";
+import React, { useState } from 'react';
+import SummonerSearch from '../components/SummonerSearch';
+import SummonerInfo from './SummonerInfo';
+import Header from '@/components/Header';
 
+import { NewFeedButton } from '@/components/feed/NewFeedButton';
+import FeedList from '@/components/feed/FeedList';
 
 const Index = () => {
   const [activeView, setActiveView] = useState<'feed' | 'search'>('feed');
@@ -50,11 +52,10 @@ const Index = () => {
               🔍 전적 검색
             </li>
 
-            <li className="text-[#6366f1]">🎮 eSports</li>
-            <li className="text-[#6366f1]">💸 베팅</li>
-            <li className="text-[#6366f1]">⚔️ 막고라</li>
-            <li className="text-[#6366f1]">⚔️ 마이페이지</li>
-
+            <li className='text-[#6366f1]'>🎮 eSports</li>
+            <li className='text-[#6366f1]'>💸 베팅</li>
+            <li className='text-[#6366f1]'>⚔️ 막고라</li>
+            <li className='text-[#6366f1]'>⚔️ 마이페이지</li>
           </ul>
         </aside>
 
@@ -81,24 +82,11 @@ const Index = () => {
                     </div>
                   </div>
                 </div>
+
                 <div className='mb-4 text-lg font-semibold text-[#111827]'>
                   커뮤니티 피드
                 </div>
-                <div className='space-y-4'>
-                  {[...Array(10)].map((_, idx) => (
-                    <div
-                      key={idx}
-                      className='rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:shadow-md'
-                    >
-                      <div className='font-semibold text-[#7c3aed]'>
-                        유저 #{idx + 1}
-                      </div>
-                      <p className='mt-1 text-[14px] text-[#374151]'>
-                        여기는 유저가 올린 커뮤니티 피드 내용이 들어갑니다.
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                <FeedList />
               </>
             )}
 
