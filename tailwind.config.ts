@@ -1,6 +1,5 @@
 // tailwind.config.ts
 import { type Config } from 'tailwindcss';
-// import animate from "tailwindcss-animate";
 
 const config: Config = {
   darkMode: 'class',
@@ -8,24 +7,24 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        primary: 'hsl(var(--primary))',
-        secondary: 'hsl(var(--secondary))',
-        destructive: 'hsl(var(--destructive))',
-        muted: 'hsl(var(--muted))',
-        accent: 'hsl(var(--accent))',
-        popover: 'hsl(var(--popover))',
-        card: 'hsl(var(--card))',
+        border: '#2A2A2A',
+        input: '#1A1A1A',
+        ring: '#4A6741',
+        background: '#0A0A0A',
+        foreground: '#E0E0E0',
+        primary: '#4A6741',
+        secondary: '#8B6914',
+        destructive: '#4A2A2A',
+        muted: '#666666',
+        accent: '#6B4423',
+        popover: '#151515',
+        card: '#1A1A1A',
       },
       fontFamily: {
         comic: ['"Comic Neue"', 'cursive'],
       },
     },
   },
-  //   plugins: [animate],
 };
+
 export default config;

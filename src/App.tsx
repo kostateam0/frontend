@@ -12,6 +12,7 @@ import MatchListPage from './components/MatchListPage';
 import LeaderBoardPage from './pages/LeaderBoardPage';
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import Mypage from "./pages/Mypage"
 
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/champions/:id" element={<ChampionDetails />} /> */}
 
             <Route path="/" element={<Index />} />
+            <Route path="/mypage" element={<Mypage />} />
             <Route path='/summonerInfo' element={<SummonerInfo />} />
 
             {/* <Route path="/summonerInfo" element={<SummonerInfo />} /> */}
