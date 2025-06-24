@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import SummonerSearch from "../components/SummonerSearch";
 import SummonerInfo from "./SummonerInfo"; 
+import Header from "@/components/Header";
 
 const Index = () => {
   const [activeView, setActiveView] = useState<"feed" | "search">("feed");
@@ -15,9 +16,7 @@ const Index = () => {
   return (
     <div className="h-screen flex flex-col bg-[#fafafa] text-[#111827]">
       {/* 상단 헤더 */}
-      <header className="w-full p-4 md:px-8 border-b border-gray-200 bg-white sticky top-0 z-20">
-        <h1 className="text-2xl font-extrabold text-[#7c3aed] tracking-wide">TROLL</h1>
-      </header>
+      <Header />
 
       {/* 메인 영역 */}
       <div
@@ -45,6 +44,7 @@ const Index = () => {
             <li className="text-[#6366f1]">🎮 eSports</li>
             <li className="text-[#6366f1]">💸 베팅</li>
             <li className="text-[#6366f1]">⚔️ 막고라</li>
+            <li className="text-[#6366f1]">⚔️ 마이페이지</li>
           </ul>
         </aside>
 
@@ -125,6 +125,7 @@ const Index = () => {
         }}>🔍</button>
         <button>🎮</button>
         <button>💸</button>
+        <button>⚔️</button>
         <button>⚔️</button>
       </aside>
     </div>

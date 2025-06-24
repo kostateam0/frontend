@@ -30,7 +30,7 @@ const SummonerInfo = ({ region, summonerName, tag }: Props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const url = new URL("http://localhost:3000/api/summoner");
+        const url = new URL("http://localhost:4000/api/summoner");
         url.searchParams.append("summonerName", summonerName);
         url.searchParams.append("tag", tag);
         url.searchParams.append("region", region);
