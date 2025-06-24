@@ -1,7 +1,10 @@
 // pages/Index.tsx
-import { useState } from 'react';
-import SummonerSearch from '../components/SummonerSearch';
-import SummonerInfo from './SummonerInfo';
+
+import React, { useState } from "react";
+import SummonerSearch from "../components/SummonerSearch";
+import SummonerInfo from "./SummonerInfo"; 
+import Header from "@/components/Header";
+
 
 const Index = () => {
   const [activeView, setActiveView] = useState<'feed' | 'search'>('feed');
@@ -15,11 +18,7 @@ const Index = () => {
   return (
     <div className='flex h-screen flex-col bg-[#fafafa] text-[#111827]'>
       {/* 상단 헤더 */}
-      <header className='sticky top-0 z-20 w-full border-b border-gray-200 bg-white p-4 md:px-8'>
-        <h1 className='text-2xl font-extrabold tracking-wide text-[#7c3aed]'>
-          TROLL
-        </h1>
-      </header>
+      <Header />
 
       {/* 메인 영역 */}
       <div
@@ -50,9 +49,12 @@ const Index = () => {
             >
               🔍 전적 검색
             </li>
-            <li className='text-[#6366f1]'>🎮 eSports</li>
-            <li className='text-[#6366f1]'>💸 베팅</li>
-            <li className='text-[#6366f1]'>⚔️ 막고라</li>
+
+            <li className="text-[#6366f1]">🎮 eSports</li>
+            <li className="text-[#6366f1]">💸 베팅</li>
+            <li className="text-[#6366f1]">⚔️ 막고라</li>
+            <li className="text-[#6366f1]">⚔️ 마이페이지</li>
+
           </ul>
         </aside>
 
@@ -155,6 +157,7 @@ const Index = () => {
         </button>
         <button>🎮</button>
         <button>💸</button>
+        <button>⚔️</button>
         <button>⚔️</button>
       </aside>
     </div>

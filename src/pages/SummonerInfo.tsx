@@ -31,10 +31,11 @@ const SummonerInfo = ({ region, summonerName, tag }: Props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const url = new URL('http://localhost:3000/api/summoner');
-        url.searchParams.append('summonerName', summonerName);
-        url.searchParams.append('tag', tag);
-        url.searchParams.append('region', region);
+        const url = new URL("http://localhost:4000/api/summoner");
+        url.searchParams.append("summonerName", summonerName);
+        url.searchParams.append("tag", tag);
+        url.searchParams.append("region", region);
+
 
         const res = await fetch(url.toString());
         if (!res.ok) throw new Error('API 호출 실패');

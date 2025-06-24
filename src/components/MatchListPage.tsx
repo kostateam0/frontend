@@ -19,9 +19,8 @@ const MatchListPage = ({ puuid, summonerName }: MatchListProps) => {
 
     const loadMatches = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:3000/api/match/full/${puuid}?count=20`,
-        );
+        const res = await fetch(`http://localhost:4000/api/match/full/${puuid}?count=20`);
+
         const data = await res.json();
 
         if (!res.ok || !data.matches) {

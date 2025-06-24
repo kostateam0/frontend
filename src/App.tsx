@@ -10,6 +10,9 @@ import SummonerInfo from './pages/SummonerInfo';
 import { AnimatePresence } from 'framer-motion';
 import MatchListPage from './components/MatchListPage';
 import LeaderBoardPage from './pages/LeaderBoardPage';
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+
 
 const queryClient = new QueryClient();
 
@@ -22,15 +25,21 @@ const App = () => (
           <Routes>
             {/* <Route path="/matches/:region/:riotId" element={<MatchListPage />} /> */}
 
-            <Route path='/' element={<Index />} />
             <Route path='/leaderboard' element={<LeaderBoardPage />} />
             {/* <Route path="/summoner/:region/:name" element={<Summoner />} />
             <Route path="/champions/:id" element={<ChampionDetails />} /> */}
+
+            <Route path="/" element={<Index />} />
+            <Route path='/summonerInfo' element={<SummonerInfo />} />
+
             {/* <Route path="/summonerInfo" element={<SummonerInfo />} /> */}
+
 
             {/* <Route path="/feed" element={<Feed />} /> */}
             {/* <Route path="/champions/:id" element={<ChampionDetails />} /> */}
 
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             {/* <Route path="*" element={<NotFound />} /> */}
           </Routes>
