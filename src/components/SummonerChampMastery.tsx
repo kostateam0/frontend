@@ -49,34 +49,42 @@ const SummonerChampMastery = ({ puuid, summonerName }: MasteryProps) => {
       initial='hidden'
       whileInView='visible'
       viewport={{ once: true, margin: '-100px' }}
-      className='mt-12'
+      className='mt-12 w-full'
     >
-      <motion.h2 variants={staggerItem} className='mb-6 text-3xl font-bold'>
+      <motion.h2
+        variants={staggerItem}
+        className='text-1xl mb-8 text-center font-bold'
+      >
         {summonerName}의 챔피언 숙련도 TOP 3
       </motion.h2>
 
-      <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+      <motion.div
+        variants={fadeIn}
+        className='glass-card mx-auto flex w-full max-w-2xl flex-row gap-6 rounded-lg p-6'
+        // flex-row로 항상 가로 정렬, 모바일에서도 3개가 한 줄에 나란히
+      >
         {top3.map((champion: any) => (
-          <motion.div
+          <div
             key={champion.championId}
-            variants={fadeIn}
-            className='glass-card flex flex-col items-center rounded-lg p-4'
+            className='flex flex-1 flex-col items-center justify-center text-center'
           >
             <img
               src={`https://ddragon.leagueoflegends.com/cdn/15.12.1/img/champion/${champion.championName}.png`}
               alt={champion.championName}
-              className='mb-2 h-24 w-24'
+              className='mb-2 h-12 w-12 object-contain sm:h-14 sm:w-14'
             />
-            <h3 className='text-lg font-semibold'>{champion.championName}</h3>
-            <p className='text-sm text-gray-500'>
-              숙련도 레벨: {champion.championLevel}
+            <h3 className='text-base font-semibold break-keep sm:text-lg'>
+              {champion.championName}
+            </h3>
+            <p className='text-xs text-gray-500 sm:text-sm'>
+              레벨: {champion.championLevel}
             </p>
-            <p className='text-sm text-gray-500'>
-              숙련도 포인트: {champion.championPoints}
+            <p className='text-xs text-gray-500 sm:text-sm'>
+              포인트: {champion.championPoints}
             </p>
-          </motion.div>
+          </div>
         ))}
-      </div>
+      </motion.div>
     </motion.div>
   );
 };

@@ -19,7 +19,9 @@ const MatchListPage = ({ puuid, summonerName }: MatchListProps) => {
 
     const loadMatches = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/api/match/full/${puuid}?count=20`);
+        const res = await fetch(
+          `http://localhost:4000/api/match/full/${puuid}?count=20`,
+        );
 
         const data = await res.json();
 
@@ -52,13 +54,9 @@ const MatchListPage = ({ puuid, summonerName }: MatchListProps) => {
         whileInView='visible'
         viewport={{ once: true, margin: '-100px' }}
         className='mb-8 text-center'
-      >
-        <motion.h2 variants={staggerItem} className='text-3xl font-bold'>
-          Recent Matches
-        </motion.h2>
-      </motion.div>
+      ></motion.div>
 
-      <div className='space-y-6'>
+      <div className='space-y-1'>
         {matches.map((match, idx) => {
           const participant = match.info?.participants?.find(
             (p: any) =>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import SummonerProfile from '../components/SummonerProfile';
 import MatchList from '../components/MatchListPage';
 import SummonerChampMastery from '../components/SummonerChampMastery';
+import SummonerRankTier from '@/components/SummonerRankTier';
 
 // props로 region, summonerName, tag 받음
 interface Props {
@@ -31,11 +32,10 @@ const SummonerInfo = ({ region, summonerName, tag }: Props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const url = new URL("http://localhost:4000/api/summoner");
-        url.searchParams.append("summonerName", summonerName);
-        url.searchParams.append("tag", tag);
-        url.searchParams.append("region", region);
-
+        const url = new URL('http://localhost:4000/api/summoner');
+        url.searchParams.append('summonerName', summonerName);
+        url.searchParams.append('tag', tag);
+        url.searchParams.append('region', region);
 
         const res = await fetch(url.toString());
         if (!res.ok) throw new Error('API 호출 실패');
@@ -65,14 +65,22 @@ const SummonerInfo = ({ region, summonerName, tag }: Props) => {
         summonerName={data.summonerName}
         tag={data.tag}
       />
-
-      {/* Summoner Champion Mastery */}
-      <SummonerChampMastery
-        puuid={data.user.puuid!}
-        summonerName={data.summonerName}
-      />
-      {/* Match List */}
-      <MatchList puuid={data.user.puuid!} summonerName={data.summonerName} />
+      {/* Summoner Champion Mastery & Match List 나란히 배치 */}
+      <div className='flex flex-col gap-8 lg:flex-row'>
+        <div className='w-full lg:w-1/3'>
+          <SummonerRankTier puuid={data.user.puuid!} />
+          <SummonerChampMastery
+            puuid={data.user.puuid!}
+            summonerName={data.summonerName}
+          />
+        </div>
+        <div className='w-full lg:w-2/3'>
+          <MatchList
+            puuid={data.user.puuid!}
+            summonerName={data.summonerName}
+          />
+        </div>
+      </div>
     </div>
   );
 };
