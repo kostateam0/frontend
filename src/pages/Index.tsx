@@ -1,8 +1,8 @@
 // pages/Index.tsx
 
-import React, { useState, useEffect } from "react"
-import SummonerSearch from "../components/SummonerSearch"
-import SummonerInfo from "./SummonerInfo"
+import React, { useState, useEffect } from 'react';
+import SummonerSearch from '../components/SummonerSearch';
+import SummonerInfo from './SummonerInfo';
 import {
   Trophy,
   Home,
@@ -17,19 +17,20 @@ import LoginButton from "@/components/LoginButton";
 
 const Index = () => {
   const [activeView, setActiveView] = useState<'feed' | 'search'>('feed')
+
   const [searchQuery, setSearchQuery] = useState<{
-    region: string
-    summonerName: string
-    tag: string
-  } | null>(null)
+    region: string;
+    summonerName: string;
+    tag: string;
+  } | null>(null);
   const [user, setUser] = useState<{ email: string } | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:4000/auth/me", {
-      credentials: "include",
+    fetch('http://localhost:4000/auth/me', {
+      credentials: 'include',
     })
       .then(async (res) => {
-        if (!res.ok) throw new Error("Not logged in");
+        if (!res.ok) throw new Error('Not logged in');
         const data = await res.json();
         setUser(data);
       })
@@ -37,26 +38,35 @@ const Index = () => {
   }, []);
 
   const handleLogout = async () => {
-    await fetch("http://localhost:4000/auth/logout", {
-      method: "POST",
-      credentials: "include",
+    await fetch('http://localhost:4000/auth/logout', {
+      method: 'POST',
+      credentials: 'include',
     });
     setUser(null);
-    window.location.href = "/";
+    window.location.href = '/';
   };
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden" style={{ backgroundColor: "#0A0A0A" }}>
+    <div
+      className='flex h-screen flex-col overflow-hidden'
+      style={{ backgroundColor: '#0A0A0A' }}
+    >
       {/* 헤더 */}
-      <div className="border-b p-4 flex items-center justify-between lg:hidden" style={{ backgroundColor: "#151515", borderColor: "#2A2A2A" }}>
-        <h1 className="text-lg font-bold flex items-center gap-2" style={{ color: "#E0E0E0" }}>
-          <Trophy className="w-5 h-5" style={{ color: "#8B6914" }} />
+      <div
+        className='flex items-center justify-between border-b p-4 lg:hidden'
+        style={{ backgroundColor: '#151515', borderColor: '#2A2A2A' }}
+      >
+        <h1
+          className='flex items-center gap-2 text-lg font-bold'
+          style={{ color: '#E0E0E0' }}
+        >
+          <Trophy className='h-5 w-5' style={{ color: '#8B6914' }} />
           Dark Troll
         </h1>
       </div>
 
       {/* 본문 */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className='flex flex-1 overflow-hidden'>
         {/* 왼쪽 사이드바 */}
         <aside
   className="hidden lg:flex w-[250px] flex-col border-r"
@@ -118,35 +128,52 @@ const Index = () => {
 </aside>
 
 
+
         {/* 중앙 영역 */}
-        <main id="scrollable-main" className="flex-1 overflow-y-auto px-4 pt-4 pb-24 lg:pb-4" style={{ backgroundColor: "#0A0A0A" }}>
-          <div className="max-w-4xl mx-auto">
+        <main
+          id='scrollable-main'
+          className='flex-1 overflow-y-auto px-4 pt-4 pb-24 lg:pb-4'
+          style={{ backgroundColor: '#0A0A0A' }}
+        >
+          <div className='mx-auto max-w-4xl'>
             {activeView === 'feed' && (
-              <div className="space-y-6">
+              <div className='space-y-6'>
                 <div className='rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 shadow-md'>
                   <div className='text-sm text-gray-400'>다음 경기</div>
-                  <div className='mt-1 font-semibold text-[#E0E0E0]'>T1 vs Gen.G - 오늘 오후 7시</div>
+                  <div className='mt-1 font-semibold text-[#E0E0E0]'>
+                    T1 vs Gen.G - 오늘 오후 7시
+                  </div>
                 </div>
 
                 <div className='rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 shadow-md'>
                   <div className='text-sm text-gray-400'>🎯 베팅 이벤트</div>
-                  <div className='mt-1 font-semibold text-[#8B6914]'>승부 예측하고 보상 받기</div>
+                  <div className='mt-1 font-semibold text-[#8B6914]'>
+                    승부 예측하고 보상 받기
+                  </div>
                 </div>
-                <div className='text-lg font-semibold text-[#E0E0E0]'>커뮤니티 피드</div>
+                <div className='text-lg font-semibold text-[#E0E0E0]'>
+                  커뮤니티 피드
+                </div>
                 <div className='space-y-4'>
                   {[...Array(10)].map((_, idx) => (
-                    <div key={idx} className='rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 shadow-sm'>
-                      <div className='font-semibold text-[#8B6914]'>유저 #{idx + 1}</div>
-                      <p className='mt-1 text-sm text-gray-300'>여기는 유저가 올린 커뮤니티 피드 내용이 들어갑니다.</p>
+                    <div
+                      key={idx}
+                      className='rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 shadow-sm'
+                    >
+                      <div className='font-semibold text-[#8B6914]'>
+                        유저 #{idx + 1}
+                      </div>
+                      <p className='mt-1 text-sm text-gray-300'>
+                        여기는 유저가 올린 커뮤니티 피드 내용이 들어갑니다.
+                      </p>
                     </div>
                   ))}
                 </div>
               </div>
-
             )}
 
-            {activeView === 'search' && (
-              searchQuery ? (
+            {activeView === 'search' &&
+              (searchQuery ? (
                 <SummonerInfo
                   region={searchQuery.region}
                   summonerName={searchQuery.summonerName}
@@ -155,18 +182,29 @@ const Index = () => {
               ) : (
                 <SummonerSearch onSearch={setSearchQuery} />
               )
+
             )}
           </div>
         </main>
 
         {/* 오른쪽 사이드바 */}
-        <aside className='hidden xl:block w-80 border-l p-4' style={{ backgroundColor: "#111111", borderColor: "#2A2A2A" }}>
-          <div className='text-lg font-bold text-[#8B6914] mb-4'>eSports 경기 정보</div>
+        <aside
+          className='hidden w-80 border-l p-4 xl:block'
+          style={{ backgroundColor: '#111111', borderColor: '#2A2A2A' }}
+        >
+          <div className='mb-4 text-lg font-bold text-[#8B6914]'>
+            eSports 경기 정보
+          </div>
           <div className='space-y-4'>
             {[...Array(6)].map((_, i) => (
-              <div key={i} className='rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] p-4'>
+              <div
+                key={i}
+                className='rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] p-4'
+              >
                 <div className='text-sm text-gray-400'>6월 20일 | LCK</div>
-                <div className='mt-1 font-semibold text-[#E0E0E0]'>T1 vs Gen.G</div>
+                <div className='mt-1 font-semibold text-[#E0E0E0]'>
+                  T1 vs Gen.G
+                </div>
                 <div className='mt-1 text-sm text-gray-400'>오후 7시 시작</div>
               </div>
             ))}
@@ -176,14 +214,28 @@ const Index = () => {
 
       {/* 모바일 하단 네비게이션 */}
       <aside className='fixed bottom-0 z-30 flex w-full items-center justify-around border-t border-[#2A2A2A] bg-[#151515] p-3 text-[18px] lg:hidden'>
-        <button onClick={() => { setActiveView('feed'); setSearchQuery(null) }}>🏠</button>
-        <button onClick={() => { setActiveView('search'); setSearchQuery(null) }}>🔍</button>
+        <button
+          onClick={() => {
+            setActiveView('feed');
+            setSearchQuery(null);
+          }}
+        >
+          🏠
+        </button>
+        <button
+          onClick={() => {
+            setActiveView('search');
+            setSearchQuery(null);
+          }}
+        >
+          🔍
+        </button>
         <button>🎮</button>
         <button>💸</button>
         <button>⚔️</button>
       </aside>
     </div>
-  )
-}
+  );
+};
 
-export default Index
+export default Index;
