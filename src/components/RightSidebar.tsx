@@ -1,4 +1,5 @@
-import React from "react";
+
+import { ChatAccordion } from '@/components/chat/ChatAccordion';
 
 const RightSidebar = () => {
   return (
@@ -13,6 +14,8 @@ const RightSidebar = () => {
           </div>
         ))}
       </div>
+
+    <ChatAccordion />
     </aside>
   );
 };
