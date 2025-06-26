@@ -12,11 +12,11 @@ import {
   Bell,
   Bookmark,
   User,
-  Settings
 } from "lucide-react"
+import LoginButton from "@/components/LoginButton";
 
 const Index = () => {
-  const [activeView, setActiveView] = useState<'feed' | 'search' | 'settings'>('feed')
+  const [activeView, setActiveView] = useState<'feed' | 'search'>('feed')
   const [searchQuery, setSearchQuery] = useState<{
     region: string
     summonerName: string
@@ -59,49 +59,64 @@ const Index = () => {
       <div className="flex flex-1 overflow-hidden">
         {/* 왼쪽 사이드바 */}
         <aside
-          className="hidden lg:flex w-[250px] flex-col border-r"
-          style={{ backgroundColor: "#111111", borderColor: "#2A2A2A" }}
+  className="hidden lg:flex w-[250px] flex-col border-r"
+  style={{ backgroundColor: "#111111", borderColor: "#2A2A2A" }}
+>
+  <div className="h-full flex flex-col p-4">
+    {/* 로고 */}
+    <div
+      className="px-4 py-3 rounded-lg mb-4 flex items-center gap-2 font-bold text-white text-lg"
+      style={{ backgroundColor: "#4A6741" }}
+    >
+      <Trophy className="w-5 h-5" style={{ color: "#FFD700" }} />
+      Dark Troll Tracker
+    </div>
+
+    {/* 메뉴 */}
+    <nav className="space-y-2 flex-1">
+      {[
+        { icon: Home, label: "홈", onClick: () => { setActiveView('feed'); setSearchQuery(null) } },
+        { icon: Search, label: "전적검색", onClick: () => { setActiveView('search'); setSearchQuery(null) } },
+        { icon: Trophy, label: "랭킹" },
+        { icon: Hash, label: "챔피언" },
+        { icon: Users, label: "팀" },
+        { icon: Bell, label: "알림" },
+        { icon: Bookmark, label: "북마크" },
+        { icon: User, label: "프로필" },
+      ].map(({ icon: Icon, label, onClick }, idx) => (
+        <button
+          key={idx}
+          onClick={onClick}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-gray-800/50 text-sm"
+          style={{ color: "#B0B0B0" }}
         >
-          <div className="h-full flex flex-col p-4">
-            {/* 로고 */}
-            <div
-              className="px-4 py-3 rounded-lg mb-4 flex items-center gap-2 font-bold text-white text-lg"
-              style={{ backgroundColor: "#4A6741" }}
-            >
-              <Trophy className="w-5 h-5" style={{ color: "#FFD700" }} />
-              Dark Troll Tracker
-            </div>
+          <Icon className="w-5 h-5" style={{ color: "#4A6741" }} />
+          {label}
+        </button>
+      ))}
+    </nav>
 
-            {/* 메뉴 */}
-            <nav className="space-y-2 flex-1">
-              {[
-                { icon: Home, label: "홈", onClick: () => { setActiveView('feed'); setSearchQuery(null) } },
-                { icon: Search, label: "전적검색", onClick: () => { setActiveView('search'); setSearchQuery(null) } },
-                { icon: Trophy, label: "랭킹" },
-                { icon: Hash, label: "챔피언" },
-                { icon: Users, label: "팀" },
-                { icon: Bell, label: "알림" },
-                { icon: Bookmark, label: "북마크" },
-                { icon: User, label: "프로필" },
-                { icon: Settings, label: "설정", onClick: () => setActiveView('settings') },
-              ].map(({ icon: Icon, label, onClick }, idx) => (
-                <button
-                  key={idx}
-                  onClick={onClick}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-gray-800/50 text-sm"
-                  style={{ color: "#B0B0B0" }}
-                >
-                  <Icon className="w-5 h-5" style={{ color: "#4A6741" }} />
-                  {label}
-                </button>
-              ))}
-            </nav>
+    {/* 로그인 버튼 */}
+    <div className="mt-4">
+      {user ? (
+        <LoginButton
+          isLoggedIn={true}
+          nickname="MoneyMonkey"
+          handle="MoneyMonkeycC8"
+          avatarUrl="/monkey-avatar.png"
+        />
+      ) : (
+        <LoginButton isLoggedIn={false} />
+      )}
+    </div>
 
-            {/* 푸터 */}
-            <div className="mt-auto opacity-10 text-center text-xs text-[#4A6741]">© DarkTroll</div>
-          </div>
+    {/* 푸터 */}
+    <div className="mt-auto opacity-10 text-center text-xs text-[#4A6741]">
+      © DarkTroll
+    </div>
+  </div>
+</aside>
 
-        </aside>
 
         {/* 중앙 영역 */}
         <main id="scrollable-main" className="flex-1 overflow-y-auto px-4 pt-4 pb-24 lg:pb-4" style={{ backgroundColor: "#0A0A0A" }}>
@@ -141,20 +156,6 @@ const Index = () => {
                 <SummonerSearch onSearch={setSearchQuery} />
               )
             )}
-
-            {activeView === 'settings' && (
-              <div className="text-[#E0E0E0] text-sm space-y-2">
-                <div className="text-lg font-bold mb-2">설정</div>
-                {user ? (
-                  <div>
-                    <p className="text-gray-400">로그인됨: {user.email}</p>
-                    <button onClick={handleLogout} className="mt-2 px-4 py-2 rounded bg-red-600 text-white text-sm">로그아웃</button>
-                  </div>
-                ) : (
-                  <a href="/login" className="text-[#4A6741] underline">로그인</a>
-                )}
-              </div>
-            )}
           </div>
         </main>
 
@@ -180,7 +181,6 @@ const Index = () => {
         <button>🎮</button>
         <button>💸</button>
         <button>⚔️</button>
-        <button onClick={() => setActiveView('settings')}>⚙️</button>
       </aside>
     </div>
   )
