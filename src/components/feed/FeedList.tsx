@@ -18,8 +18,10 @@ export const getFeeds = async () => {
 };
 
 type Feed = {
+  id: string;
   userID: string;
   content: string;
+  createdAt: string;
 };
 
 export default function FeedList() {
@@ -36,19 +38,16 @@ export default function FeedList() {
     };
     fetchFeeds();
   }, []);
+  
+  // 피드 삭제 핸들러
+  const handleDeleteFeed = (id: string) => {
+    setFeedList((prevFeeds) => prevFeeds.filter((feed) => feed.id !== id));
+  };
+
   return (
     <div className='space-y-4'>
       {feedList.map((feed, idx) => (
-        <FeedItem key={idx} feed={feed} />
-        // <div
-        //   key={idx}
-        //   className='rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:shadow-md'
-        // >
-        //   <div className='font-semibold text-[#7c3aed]'>{feed.userID}</div>
-        //   <p className='mt-1 text-[14px] text-[#374151]'>
-        //     {feed.content}
-        //   </p>
-        // </div>
+        <FeedItem key={idx} feed={feed} onDelete={handleDeleteFeed} />
       ))}
     </div>
   );

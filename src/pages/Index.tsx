@@ -1,3 +1,4 @@
+
 export default function Index() {
   return (
     <div className="space-y-6">
