@@ -17,6 +17,8 @@ import {
 import NewFeed from '@/components/feed/NewFeed';
 import { NewFeedButton } from '@/components/feed/NewFeedButton';
 import FeedList from '@/components/feed/FeedList';
+import ChatCard from '@/components/chat/ChatCard';
+import { ChatAccordion } from '@/components/chat/ChatAccordion';
 
 const Index = () => {
   const [activeView, setActiveView] = useState<'feed' | 'search' | 'settings'>(
@@ -147,7 +149,7 @@ const Index = () => {
         {/* 중앙 영역 */}
         <main
           id='scrollable-main'
-          className='flex-1 overflow-y-auto px-4 pt-4 pb-24 lg:pb-4 min-w-4xl w-full'
+          className='flex-1 overflow-y-auto px-4 pt-4 pb-24 lg:pb-4 min-w-3xl w-full'
           style={{ backgroundColor: '#0A0A0A' }}
         >
           <div className='mx-auto max-w-4xl w-full'>
@@ -211,14 +213,14 @@ const Index = () => {
 
         {/* 오른쪽 사이드바 */}
         <aside
-          className='hidden w-80 border-l p-4 xl:block'
+          className='hidden w-80 border-l p-4 xl:block space-y-4 max-h-screen overflow-y-auto'
           style={{ backgroundColor: '#111111', borderColor: '#2A2A2A' }}
         >
           <div className='mb-4 text-lg font-bold text-[#8B6914]'>
             eSports 경기 정보
           </div>
           <div className='space-y-4'>
-            {[...Array(6)].map((_, i) => (
+            {[...Array(4)].map((_, i) => (
               <div
                 key={i}
                 className='rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] p-4'
@@ -231,6 +233,8 @@ const Index = () => {
               </div>
             ))}
           </div>
+          <ChatAccordion />
+          {/* <ChatCard /> */}
         </aside>
       </div>
 
