@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -8,18 +8,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import NewFeed from "./NewFeed"
+} from '@/components/ui/dialog';
+import NewFeed from './NewFeed';
+import { Pencil } from 'lucide-react';
 
 export function NewFeedButton() {
   return (
     <Dialog>
       <form>
         <DialogTrigger asChild>
-          <Button variant="outline">Open Dialog</Button>
+          <Button variant='outline' className='w-full h-12 bg-[#4a6741] dark:bg-[#4a6741]'>
+            <Pencil className='mr-2 h-4 w-4' />
+            New Feed
+          </Button>
         </DialogTrigger>
         {/* <DialogContent className="sm:max-w-[425px]"> */}
-        <DialogContent className="max-w-2/5">
+        <DialogContent className='max-w-2/5'>
           {/* 훼더 */}
           <DialogHeader>
             <DialogTitle>Edit profile</DialogTitle>
@@ -30,17 +34,17 @@ export function NewFeedButton() {
           </DialogHeader>
 
           {/* 본문 */}
-          <NewFeed/>
+          <NewFeed />
 
           {/* 뿌터 */}
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant='outline'>Cancel</Button>
             </DialogClose>
-            <Button type="submit">Save changes</Button>
+            <Button type='submit'>Save changes</Button>
           </DialogFooter>
         </DialogContent>
       </form>
     </Dialog>
-  )
+  );
 }

@@ -14,6 +14,9 @@ import {
   User,
   Settings,
 } from 'lucide-react';
+import NewFeed from '@/components/feed/NewFeed';
+import { NewFeedButton } from '@/components/feed/NewFeedButton';
+import FeedList from '@/components/feed/FeedList';
 
 const Index = () => {
   const [activeView, setActiveView] = useState<'feed' | 'search' | 'settings'>(
@@ -49,7 +52,7 @@ const Index = () => {
 
   return (
     <div
-      className='flex h-screen flex-col overflow-hidden'
+      className='flex h-screen max-w-full flex-col items-center justify-center overflow-hidden'
       style={{ backgroundColor: '#0A0A0A' }}
     >
       {/* 헤더 */}
@@ -67,7 +70,7 @@ const Index = () => {
       </div>
 
       {/* 본문 */}
-      <div className='flex flex-1 overflow-hidden'>
+      <div className='flex max-w-7xl flex-1 overflow-hidden'>
         {/* 왼쪽 사이드바 */}
         <aside
           className='hidden w-[250px] flex-col border-r lg:flex'
@@ -132,6 +135,7 @@ const Index = () => {
                 </button>
               ))}
             </nav>
+            <NewFeedButton />
 
             {/* 푸터 */}
             <div className='mt-auto text-center text-xs text-[#4A6741] opacity-10'>
@@ -143,10 +147,10 @@ const Index = () => {
         {/* 중앙 영역 */}
         <main
           id='scrollable-main'
-          className='flex-1 overflow-y-auto px-4 pt-4 pb-24 lg:pb-4'
+          className='flex-1 overflow-y-auto px-4 pt-4 pb-24 lg:pb-4 min-w-4xl w-full'
           style={{ backgroundColor: '#0A0A0A' }}
         >
-          <div className='mx-auto max-w-4xl'>
+          <div className='mx-auto max-w-4xl w-full'>
             {activeView === 'feed' && (
               <div className='space-y-6'>
                 <div className='rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 shadow-md'>
@@ -165,21 +169,7 @@ const Index = () => {
                 <div className='text-lg font-semibold text-[#E0E0E0]'>
                   커뮤니티 피드
                 </div>
-                <div className='space-y-4'>
-                  {[...Array(10)].map((_, idx) => (
-                    <div
-                      key={idx}
-                      className='rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 shadow-sm'
-                    >
-                      <div className='font-semibold text-[#8B6914]'>
-                        유저 #{idx + 1}
-                      </div>
-                      <p className='mt-1 text-sm text-gray-300'>
-                        여기는 유저가 올린 커뮤니티 피드 내용이 들어갑니다.
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                <FeedList />
               </div>
             )}
 
