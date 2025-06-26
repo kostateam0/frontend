@@ -4,7 +4,6 @@ import MatchList from '../components/MatchListPage';
 import SummonerChampMastery from '../components/SummonerChampMastery';
 import SummonerRankTier from '@/components/SummonerRankTier';
 
-// props로 region, summonerName, tag 받음
 interface Props {
   region: string;
   summonerName: string;
@@ -16,7 +15,7 @@ interface Summoner {
   summonerLevel: number;
   profileIconId: number;
   revisionDate: number;
-  puuid?: string;
+  puuid: string; // 필수로 처리
 }
 
 interface ApiResponse {
@@ -27,7 +26,7 @@ interface ApiResponse {
 
 const SummonerInfo = ({ region, summonerName, tag }: Props) => {
   const [data, setData] = useState<ApiResponse | null>(null);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,48 +36,49 @@ const SummonerInfo = ({ region, summonerName, tag }: Props) => {
         url.searchParams.append('tag', tag);
         url.searchParams.append('region', region);
 
+        console.log('📡 API 요청 URL:', url.toString());
+
         const res = await fetch(url.toString());
-        if (!res.ok) throw new Error('API 호출 실패');
+        if (!res.ok) throw new Error(`API 호출 실패: ${res.status}`);
 
         const json: ApiResponse = await res.json();
+        if (!json.user || !json.user.puuid) {
+          throw new Error('유효한 소환사 정보를 찾을 수 없습니다.');
+        }
+
         setData(json);
-      } catch (err) {
-        setError('소환사 정보를 불러올 수 없습니다.');
-        console.error(err);
+      } catch (err: any) {
+        console.error('❌ 소환사 정보 에러:', err);
+        setError(err.message ?? '소환사 정보를 불러올 수 없습니다.');
       }
     };
 
     if (summonerName && tag && region) {
       fetchData();
     }
-  }, [summonerName, tag, region]);
+  }, [region, summonerName, tag]);
 
-  if (error) return <p className='mt-6 text-center text-red-500'>{error}</p>;
-  if (!data)
-    return <p className='mt-6 text-center text-gray-500'>불러오는 중...</p>;
+  if (error) {
+    return <p className="mt-6 text-center text-red-500">{error}</p>;
+  }
+
+  if (!data) {
+    return <p className="mt-6 text-center text-gray-500">불러오는 중...</p>;
+  }
+
+  const { user, summonerName: name, tag: riotTag } = data;
 
   return (
-    <div className='mx-auto max-w-4xl px-4 pt-12 pb-20'>
-      {/* Summoner Profile */}
-      <SummonerProfile
-        summoner={data.user}
-        summonerName={data.summonerName}
-        tag={data.tag}
-      />
-      {/* Summoner Champion Mastery & Match List 나란히 배치 */}
-      <div className='flex flex-col gap-8 lg:flex-row'>
-        <div className='w-full lg:w-1/3'>
-          <SummonerRankTier puuid={data.user.puuid!} />
-          <SummonerChampMastery
-            puuid={data.user.puuid!}
-            summonerName={data.summonerName}
-          />
+    <div className="mx-auto max-w-5xl px-4 pt-12 pb-20">
+      <SummonerProfile summoner={user} summonerName={name} tag={riotTag} />
+
+      <div className="flex flex-col gap-8 lg:flex-row mt-8">
+        <div className="w-full lg:w-1/3 space-y-6">
+          <SummonerRankTier puuid={user.puuid} />
+          <SummonerChampMastery puuid={user.puuid} summonerName={name} />
         </div>
-        <div className='w-full lg:w-2/3'>
-          <MatchList
-            puuid={data.user.puuid!}
-            summonerName={data.summonerName}
-          />
+        <div className="w-full lg:w-2/3">
+          <MatchList puuid={user.puuid} summonerName={name} />
         </div>
       </div>
     </div>

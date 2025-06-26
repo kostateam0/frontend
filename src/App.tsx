@@ -1,54 +1,40 @@
-// import { Toaster } from "@/components/ui/toaster";
-// import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from '@/components/ui/tooltip';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Index from './pages/Index';
-import SummonerInfo from './pages/SummonerInfo';
-// import ChampionDetails from "./pages/ChampionDetails";
-// import NotFound from "./pages/NotFound";
 import { AnimatePresence } from 'framer-motion';
-import MatchListPage from './components/MatchListPage';
-import LeaderBoardPage from './pages/LeaderBoardPage';
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import Mypage from "./pages/Mypage"
 
+import MainLayout from './layout/MainLayout';
+import Index from './pages/Index';
+import SearchPage from './pages/SearchPage';
+// import SummonerInfo from './pages/SummonerInfo';
+import Mypage from './pages/Mypage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      {/* <Toaster /> <Sonner />*/}
-      <BrowserRouter>
-        <AnimatePresence mode='wait'>
-          <Routes>
-            {/* <Route path="/matches/:region/:riotId" element={<MatchListPage />} /> */}
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <BrowserRouter>
+          <AnimatePresence mode="wait">
+            <Routes>
+              {/* MainLayout 적용 구간 */}
+              <Route element={<MainLayout />}>
+                <Route index element={<Index />} />
+                <Route path="search" element={<SearchPage />} />  
+                {/* <Route path="summoner/:region/:name-:tag" element={<SummonerInfo/>} /> */}
+                <Route path="mypage" element={<Mypage />} />
+              </Route>
 
-            <Route path='/leaderboard' element={<LeaderBoardPage />} />
-            {/* <Route path="/summoner/:region/:name" element={<Summoner />} />
-            <Route path="/champions/:id" element={<ChampionDetails />} /> */}
-
-            <Route path="/" element={<Index />} />
-            <Route path="/mypage" element={<Mypage />} />
-            <Route path='/summonerInfo' element={<SummonerInfo />} />
-
-            {/* <Route path="/summonerInfo" element={<SummonerInfo />} /> */}
-
-
-            {/* <Route path="/feed" element={<Feed />} /> */}
-            {/* <Route path="/champions/:id" element={<ChampionDetails />} /> */}
-
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            {/* <Route path="*" element={<NotFound />} /> */}
-          </Routes>
-        </AnimatePresence>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
-
-export default App;
+              {/* 레이아웃 없는 페이지 */}
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+            </Routes>
+          </AnimatePresence>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}

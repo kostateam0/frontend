@@ -26,36 +26,58 @@ type Props = {
 };
 
 const SummonerSearch = ({ onSearch }: Props) => {
-  const [summonerInput, setSummonerInput] = useState("");
-  const [region, setRegion] = useState("kr");
+  const [summonerInput, setSummonerInput] = useState('');
+  const [region, setRegion] = useState('kr');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const [summonerName, tag] = summonerInput.split("#");
+    const trimmed = summonerInput.trim();
+    const [summonerName, tag] = trimmed.split('#').map((s) => s.trim());
 
     if (!summonerName || !tag) {
-      alert("소환사이름#태그 형식으로 입력하세요.");
+      setError('❗ 소환사이름#태그 형식으로 입력하세요.');
       return;
     }
 
-    onSearch({ region, summonerName, tag }); // 🔥 부모에 전달만 함
+    setError('');
+    console.log('🎯 검색 실행:', { region, summonerName, tag });
+    onSearch({ region, summonerName, tag });
   };
 
   return (
-    <motion.div className="mx-auto w-full max-w-2xl text-center" variants={staggerContainer} initial="hidden" animate="visible">
-      <motion.span className="text-lol-blue bg-lol-blue/10 mb-4 inline-block rounded-full px-3 py-1 text-xs font-medium" variants={staggerItem}>
+    <motion.div
+      className="mx-auto w-full max-w-2xl text-center"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.span
+        className="text-lol-blue bg-lol-blue/10 mb-4 inline-block rounded-full px-3 py-1 text-xs font-medium"
+        variants={staggerItem}
+      >
         LEAGUE OF LEGENDS STATS
       </motion.span>
 
-      <motion.h1 className="mb-6 text-4xl font-bold sm:text-5xl md:text-6xl" variants={staggerItem}>
+      <motion.h1
+        className="mb-6 text-4xl font-bold sm:text-5xl md:text-6xl"
+        variants={staggerItem}
+      >
         Elevate your League experience
       </motion.h1>
 
-      <motion.p className="text-muted-foreground mx-auto mb-10 max-w-xl text-lg" variants={staggerItem}>
+      <motion.p
+        className="text-muted-foreground mx-auto mb-10 max-w-xl text-lg"
+        variants={staggerItem}
+      >
         Search for any summoner to get detailed insights, match history, and champion performance stats.
       </motion.p>
 
-      <motion.form onSubmit={handleSubmit} className="glass-card relative mx-auto max-w-xl overflow-hidden rounded-xl p-1" variants={fadeIn}>
+      <motion.form
+        onSubmit={handleSubmit}
+        className="glass-card relative mx-auto max-w-xl overflow-hidden rounded-xl p-1"
+        variants={fadeIn}
+      >
         <div className="flex flex-col sm:flex-row">
           <select
             value={region}
@@ -80,10 +102,18 @@ const SummonerSearch = ({ onSearch }: Props) => {
             <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
           </div>
 
-          <button type="submit" className="bg-lol-blue hover:bg-lol-blue/90 px-6 py-4 font-medium text-white transition-colors focus:outline-none sm:px-8">
+          <button
+            type="submit"
+            className="bg-lol-blue hover:bg-lol-blue/90 px-6 py-4 font-medium text-white transition-colors focus:outline-none sm:px-8"
+          >
             Search
           </button>
         </div>
+
+        {/* 오류 메시지 표시 */}
+        {error && (
+          <p className="text-red-500 mt-3 text-sm text-left px-4">{error}</p>
+        )}
       </motion.form>
     </motion.div>
   );
