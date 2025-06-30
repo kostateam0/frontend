@@ -11,12 +11,12 @@ export function ChatAccordion() {
     <Accordion
       type='single'
       collapsible
-      className='w-full'
+      className='h-3/5'
       defaultValue='item-1'
     >
-      <AccordionItem value='item-1'>
+      <AccordionItem value='item-1' className='h-full'>
         <AccordionTrigger>Live Chat</AccordionTrigger>
-        <AccordionContent className='flex flex-col gap-4 text-balance'>
+        <AccordionContent className='h-full'>
           <ChatCard />
         </AccordionContent>
       </AccordionItem>
