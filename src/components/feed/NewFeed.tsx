@@ -62,7 +62,7 @@ export default function NewFeed() {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4">z
         <Textarea
           placeholder="지금 무슨 생각을 하고 계신가요?"
           value={content}

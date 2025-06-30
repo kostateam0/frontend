@@ -8,6 +8,8 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Heart, MessageCircle, Share } from 'lucide-react';
 import { formatDate } from '@/utils/formatDate';
+import NewFeed from './NewFeed';
+import { NewFeedButton } from './NewFeedButton';
 
 type FeedItemProps = {
   feed: {
