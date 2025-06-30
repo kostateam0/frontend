@@ -10,6 +10,7 @@ import SearchPage from './pages/SearchPage';
 import Mypage from './pages/Mypage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import AuthInitializer from './components/AuthInitializer';
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <BrowserRouter>
+        <AuthInitializer /> {/* ✅ 상태 복구용 */}
           <AnimatePresence mode="wait">
             <Routes>
               {/* MainLayout 적용 구간 */}

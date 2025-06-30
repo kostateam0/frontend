@@ -1,46 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useUserStore } from "@/store/userStore";
 import SummonerProfile from "@/components/SummonerProfile";
 import SummonerRankTier from "@/components/SummonerRankTier";
 import SummonerChampMastery from "@/components/SummonerChampMastery";
 import { Separator } from "@/components/ui/separator";
 
 const Mypage = () => {
-  const [user, setUser] = useState<{
-    name: string;
-    email: string;
-    rsoAccount?: {
-      gameName: string;
-      tagLine: string;
-      puuid: string;
-      profileIconId: number;
-      summonerLevel: number;
-    };
-  } | null>(null);
+  const { user, isLoggedIn, accessToken, setUser, logout } = useUserStore();
 
-  const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState("");
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("http://localhost:4000/authkit/user/profile", {
-          credentials: "include",
-        });
-        if (!res.ok) throw new Error("인증 실패");
-
-        const data = await res.json();
-        setUser(data.user);
-      } catch (err) {
-        console.error(err);
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   const handleAccountDelete = async () => {
     if (!confirm("정말로 탈퇴하시겠습니까?")) return;
@@ -51,6 +20,7 @@ const Mypage = () => {
       });
       if (!res.ok) throw new Error("탈퇴 실패");
       alert("회원 탈퇴가 완료되었습니다.");
+      logout();
       window.location.href = "/login";
     } catch (err) {
       alert("오류가 발생했습니다.");
@@ -58,9 +28,27 @@ const Mypage = () => {
     }
   };
 
-  if (loading) return <div className="text-center mt-10">로딩 중...</div>;
+  const handleSaveName = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/authkit/user/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({ name: editedName }),
+      });
+      if (!res.ok) throw new Error("수정 실패");
+      if (user) setUser({ ...user, name: editedName }, accessToken!);
+      setIsEditing(false);
+    } catch (err) {
+      alert("수정 중 오류가 발생했습니다.");
+      console.error(err);
+    }
+  };
 
-  if (!user)
+  if (!isLoggedIn || !user)
     return (
       <div className="text-center mt-10 text-red-500">
         로그인 정보가 없습니다. <a href="/login" className="underline">로그인</a>
@@ -80,57 +68,52 @@ const Mypage = () => {
           <h2 className="text-3xl font-extrabold text-center">트롤 마이페이지</h2>
 
           <div className="space-y-2 text-center text-lg">
-            <p><strong>이름:</strong> {isEditing ? (
-              <>
-                <input
-                  value={editedName}
-                  onChange={(e) => setEditedName(e.target.value)}
-                  className="border px-2 py-1 rounded ml-2"
-                />
-                <button
-                  onClick={async () => {
-                    try {
-                      const res = await fetch("http://localhost:4000/authkit/user/profile", {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        credentials: "include",
-                        body: JSON.stringify({ name: editedName }),
-                      });
-                      if (!res.ok) throw new Error("수정 실패");
-                      setUser((prev) => prev ? { ...prev, name: editedName } : prev);
-                      setIsEditing(false);
-                    } catch (err) {
-                      alert("수정 중 오류가 발생했습니다.");
-                      console.error(err);
-                    }
-                  }}
-                  className="ml-2 text-blue-500"
-                >저장</button>
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="ml-1 text-gray-500"
-                >취소</button>
-              </>
-            ) : (
-              <>
-                {user.name}
-                <button
-                  onClick={() => {
-                    setIsEditing(true);
-                    setEditedName(user.name);
-                  }}
-                  className="ml-2 text-sm text-blue-500 underline"
-                >수정</button>
-              </>
-            )}</p>
-            <p><strong>이메일:</strong> {user.email}</p>
+            <p>
+              <strong>이름:</strong>{" "}
+              {isEditing ? (
+                <>
+                  <input
+                    value={editedName}
+                    onChange={(e) => setEditedName(e.target.value)}
+                    className="border px-2 py-1 rounded ml-2"
+                  />
+                  <button onClick={handleSaveName} className="ml-2 text-blue-500">
+                    저장
+                  </button>
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="ml-1 text-gray-500"
+                  >
+                    취소
+                  </button>
+                </>
+              ) : (
+                <>
+                  {user.name}
+                  <button
+                    onClick={() => {
+                      setIsEditing(true);
+                      setEditedName(user.name);
+                    }}
+                    className="ml-2 text-sm text-blue-500 underline"
+                  >
+                    수정
+                  </button>
+                </>
+              )}
+            </p>
+            <p>
+              <strong>이메일:</strong> {user.email}
+            </p>
           </div>
 
           <div className="flex flex-col md:flex-row justify-center gap-4">
             <button
               onClick={handleAccountDelete}
               className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full border-2 border-black transition"
-            >회원 탈퇴</button>
+            >
+              회원 탈퇴
+            </button>
           </div>
 
           <Separator className="my-4" />
@@ -162,7 +145,9 @@ const Mypage = () => {
                   window.location.href = `https://auth.riotgames.com/authorize?...`;
                 }}
                 className="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded"
-              >Riot 계정 연결하기</button>
+              >
+                Riot 계정 연결하기
+              </button>
             </div>
           )}
         </div>
