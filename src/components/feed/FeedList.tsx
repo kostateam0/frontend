@@ -18,7 +18,7 @@ export const getFeeds = async () => {
 };
 
 type Feed = {
-  id: string;
+  feedID: string;
   userID: string;
   content: string;
   createdAt: string;
@@ -41,7 +41,7 @@ export default function FeedList() {
   
   // 피드 삭제 핸들러
   const handleDeleteFeed = (id: string) => {
-    setFeedList((prevFeeds) => prevFeeds.filter((feed) => feed.id !== id));
+    setFeedList((prevFeeds) => prevFeeds.filter((feed) => feed.feedID !== id));
   };
 
   return (

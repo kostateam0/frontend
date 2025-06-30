@@ -8,12 +8,10 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Heart, MessageCircle, Share } from 'lucide-react';
 import { formatDate } from '@/utils/formatDate';
-import NewFeed from './NewFeed';
-import { NewFeedButton } from './NewFeedButton';
 
 type FeedItemProps = {
   feed: {
-    id: string;
+    feedID: string;
     userID: string;
     lp: number;
     createdAt: string;
@@ -34,7 +32,7 @@ export default function FeedItem({ feed, onDelete }: FeedItemProps) {
   };
 
   const handleDelete = () => {
-    fetch(`http://localhost:4000/api/feed/${feed.id}`, {
+    fetch(`http://localhost:4000/api/feed/${feed.feedID}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -45,7 +43,7 @@ export default function FeedItem({ feed, onDelete }: FeedItemProps) {
       .then(() => {
         console.log('삭제 성공');
         if (onDelete) {
-          onDelete(feed.id); // 상태 업데이트
+          onDelete(feed.feedID); // 상태 업데이트
         }
       })
       .catch((err) => console.error('삭제 실패:', err));
