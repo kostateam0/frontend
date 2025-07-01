@@ -13,6 +13,7 @@ import RegisterPage from './pages/RegisterPage';
 import AuthInitializer from './components/AuthInitializer';
 import Esports from './pages/EsportsPage';
 import LeaderBoardPage from './pages/LeaderBoardPage';
+import BetPage from './pages/BetPage';
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ export default function App() {
                 <Route path='esports' element={<Esports />} />
                 {/* <Route path="summoner/:region/:name-:tag" element={<SummonerInfo/>} /> */}
                 <Route path='mypage' element={<Mypage />} />
+                <Route path='bet' element={<BetPage />} />
               </Route>
 
               {/* 레이아웃 없는 페이지 */}
