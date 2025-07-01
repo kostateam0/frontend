@@ -35,9 +35,9 @@ const EsportsRankings: React.FC = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div className='p-4'>
+    <div className='p-4 bg-[#23232b] min-h-[400px] rounded-xl shadow-lg w-full max-w-4xl mx-auto'>
       <h1 className='mb-4 text-2xl font-bold'>2025 LCK Spring 순위표</h1>
-      <table className='w-full table-auto border-collapse overflow-hidden rounded-xl bg-[#23232b] text-white'>
+      <table className='w-full table-auto border-collapse overflow-hidden rounded-xl bg-[#23232b] text-white max-w-4xl mx-auto'>
         <thead>
           <tr className='bg-[#292936] text-sm text-gray-300'>
             <th className='px-4 py-3 text-center font-semibold'>Rank</th>
