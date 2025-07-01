@@ -11,6 +11,8 @@ import Mypage from './pages/Mypage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AuthInitializer from './components/AuthInitializer';
+import Esports from './pages/EsportsPage';
+import LeaderBoardPage from './pages/LeaderBoardPage';
 
 const queryClient = new QueryClient();
 
@@ -19,20 +21,22 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <BrowserRouter>
-        <AuthInitializer /> {/* ✅ 상태 복구용 */}
-          <AnimatePresence mode="wait">
+          <AuthInitializer /> {/* ✅ 상태 복구용 */}
+          <AnimatePresence mode='wait'>
             <Routes>
               {/* MainLayout 적용 구간 */}
               <Route element={<MainLayout />}>
                 <Route index element={<Index />} />
-                <Route path="search" element={<SearchPage />} />  
+                <Route path='search' element={<SearchPage />} />
+                <Route path='esports' element={<Esports />} />
                 {/* <Route path="summoner/:region/:name-:tag" element={<SummonerInfo/>} /> */}
-                <Route path="mypage" element={<Mypage />} />
+                <Route path='mypage' element={<Mypage />} />
               </Route>
 
               {/* 레이아웃 없는 페이지 */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
+              <Route path='/leaderboard' element={<LeaderBoardPage />} />
+              <Route path='/login' element={<LoginPage />} />
+              <Route path='/register' element={<RegisterPage />} />
             </Routes>
           </AnimatePresence>
         </BrowserRouter>
