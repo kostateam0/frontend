@@ -54,22 +54,25 @@ const EsportsTeams: React.FC = () => {
 
   const selectedTeam = teams.find((t) => t.id === selectedTeamId);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className='text-white'>Loading...</div>;
 
-  // 팀을 두 줄로 나누기
-  const half = Math.ceil(teams.length / 2);
-  const firstRow = teams.slice(0, half);
-  const secondRow = teams.slice(half);
+  // 팀을 2~3줄로 자동 분할 (최대 6개씩 한 줄, 13개면 5/4/4)
+  const maxPerRow =
+    teams.length > 12 ? 6 : teams.length > 8 ? 5 : Math.ceil(teams.length / 2);
+  const rows: Team[][] = [];
+  for (let i = 0; i < teams.length; i += maxPerRow) {
+    rows.push(teams.slice(i, i + maxPerRow));
+  }
 
   return (
-    <div className='p-4'>
-      <div className='mb-4 flex items-center gap-3'>
-        <label htmlFor='series-select' className='font-semibold text-gray-700'>
+    <div className='mx-auto mb-4 min-h-[600px] w-full max-w-4xl rounded-xl bg-[#23232b] p-4 shadow-lg'>
+      <div className='mb-6 flex items-center gap-3'>
+        <label htmlFor='series-select' className='font-semibold text-gray-200'>
           리그 선택:
         </label>
         <select
           id='series-select'
-          className='rounded border px-2 py-1 text-gray-700'
+          className='rounded border border-[#444] bg-[#292936] px-2 py-1 text-gray-200 focus:outline-none'
           value={seriesId}
           onChange={(e) => setSeriesId(Number(e.target.value))}
         >
@@ -80,12 +83,12 @@ const EsportsTeams: React.FC = () => {
           ))}
         </select>
       </div>
-      <div className='rounded-xl border border-gray-200 bg-white/90 p-4 shadow'>
-        {/* 네비게이션(두 줄) + 로스터 통합 */}
+      <div className='mx-auto w-full max-w-4xl rounded-xl border border-[#292936] bg-[#23232b] p-4 shadow-inner'>
+        {/* 네비게이션(2~3줄 반응형) + 로스터 통합 */}
         <div className='flex flex-col gap-4'>
-          {/* 팀 네비게이션 두 줄 */}
+          {/* 팀 네비게이션 여러 줄 */}
           <div className='flex w-full flex-col items-center justify-center gap-1'>
-            {[firstRow, secondRow].map((row, rowIdx) => (
+            {rows.map((row, rowIdx) => (
               <div
                 key={rowIdx}
                 className='flex w-full flex-row flex-nowrap items-center justify-center'
@@ -93,12 +96,16 @@ const EsportsTeams: React.FC = () => {
                 {row.map((team, idx) => (
                   <div
                     key={team.id}
-                    className={`flex cursor-pointer items-center gap-2 px-3 py-1 whitespace-nowrap transition select-none ${selectedTeamId === team.id ? 'font-bold text-blue-700' : 'text-gray-500 hover:text-blue-500'} `}
+                    className={`flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 whitespace-nowrap transition select-none ${
+                      selectedTeamId === team.id
+                        ? 'bg-[#292936] font-bold text-[#6ee7b7]'
+                        : 'text-gray-400 hover:bg-[#232340] hover:text-[#b6eaff]'
+                    }`}
                     style={{
-                      minWidth: 80,
-                      maxWidth: 120,
+                      minWidth: 90,
+                      maxWidth: 140,
                       borderRight:
-                        idx !== row.length - 1 ? '1px solid #e5e7eb' : 'none',
+                        idx !== row.length - 1 ? '1px solid #363646' : 'none',
                     }}
                     onClick={() => setSelectedTeamId(team.id)}
                   >
@@ -106,10 +113,12 @@ const EsportsTeams: React.FC = () => {
                       <img
                         src={team.image_url}
                         alt={team.name}
-                        className='h-5 w-5 rounded object-contain'
+                        className='h-6 w-6 rounded border border-[#363646] bg-[#18181c] object-contain'
                       />
                     )}
-                    {team.acronym || team.name}
+                    <span className='text-base'>
+                      {team.acronym || team.name}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -124,14 +133,14 @@ const EsportsTeams: React.FC = () => {
                   <img
                     src={selectedTeam.image_url}
                     alt={selectedTeam.name}
-                    className='h-16 w-16 rounded-lg border border-gray-200 bg-white object-contain'
+                    className='h-16 w-16 rounded-lg border border-[#363646] bg-[#18181c] object-contain'
                   />
                 )}
-                <h2 className='text-xl font-bold text-gray-800'>
+                <h2 className='text-2xl font-bold text-white'>
                   {selectedTeam.name}
                 </h2>
               </div>
-              <h3 className='mb-2 text-lg font-semibold text-blue-600'>
+              <h3 className='mb-2 text-lg font-semibold text-[#6ee7b7]'>
                 ROSTER
               </h3>
               <ul className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
@@ -149,27 +158,27 @@ const EsportsTeams: React.FC = () => {
                     .map((player) => (
                       <li
                         key={player.id}
-                        className='flex items-center gap-3 rounded-xl border bg-white p-3 shadow'
+                        className='flex items-center gap-3 rounded-xl border border-[#292936] bg-[#292936] p-3 shadow'
                       >
                         {player.image_url && (
                           <img
                             src={player.image_url}
                             alt={player.name}
-                            className='h-10 w-10 rounded-full border border-gray-200 bg-gray-50 object-cover'
+                            className='h-10 w-10 rounded-full border border-[#363646] bg-[#18181c] object-cover'
                           />
                         )}
                         <div>
-                          <div className='font-bold text-gray-800'>
+                          <div className='font-bold text-white'>
                             {player.name}
                           </div>
-                          <div className='text-sm text-gray-500 capitalize'>
+                          <div className='text-sm text-gray-400 capitalize'>
                             {player.role}
                           </div>
                         </div>
                       </li>
                     ))
                 ) : (
-                  <li>로스터 정보가 없습니다.</li>
+                  <li className='text-gray-400'>로스터 정보가 없습니다.</li>
                 )}
               </ul>
             </div>
