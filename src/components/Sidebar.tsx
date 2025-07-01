@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Trophy, Home, Search, User } from 'lucide-react';
+import { Trophy, Home, Search, User, Coins } from 'lucide-react';
 import LoginButton from '@/components/LoginButton';
 import { useEffect, useState } from 'react';
 import NewFeed from './feed/NewFeed';
@@ -21,6 +21,7 @@ export default function Sidebar() {
     { icon: Search, label: '전적검색', path: '/search' },
     { icon: Trophy, label: 'e-스포츠', path: '/esports' },
     { icon: User, label: '프로필', path: '/mypage' },
+    { icon: Coins, label: '배팅', path: '/bet' },
   ];
 
   return (
