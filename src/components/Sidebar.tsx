@@ -19,6 +19,7 @@ export default function Sidebar() {
   const menu = [
     { icon: Home, label: '홈', path: '/' },
     { icon: Search, label: '전적검색', path: '/search' },
+    { icon: Trophy, label: 'e-스포츠', path: '/esports' },
     { icon: User, label: '프로필', path: '/mypage' },
   ];
 
