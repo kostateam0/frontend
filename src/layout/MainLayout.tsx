@@ -22,12 +22,13 @@ export default function MainLayout() {
         <Sidebar />
         <main
           id='scrollable-main'
-          className='w-full min-w-3xl flex-1 overflow-y-auto px-4 pt-4 pb-24 lg:pb-4'
+          className='scrollbar w-full min-w-3xl flex-1 px-4 pt-4 pb-24 lg:pb-4'
           style={{ backgroundColor: '#0A0A0A' }}
         >
-          <div className='mx-auto max-w-4xl'>
-            <Outlet />
-          </div>
+          <Outlet />
+          {/* <div className='mx-auto max-w-4xl'>
+            
+          </div> */}
         </main>
         <Toaster position='bottom-center'/>
         <RightSidebar /> {/* ✅ 컴포넌트 삽입 */}
