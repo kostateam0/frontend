@@ -8,6 +8,10 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Heart, MessageCircle, Share } from 'lucide-react';
 import { formatDate } from '@/utils/formatDate';
+import { Button } from '../ui/button';
+import { useState } from 'react';
+import { NewCommentModal } from '../comment/NewCommentModal';
+import { Link } from 'react-router-dom';
 
 type FeedItemProps = {
   feed: {
@@ -22,11 +26,25 @@ type FeedItemProps = {
     cs: number;
     duration: string;
     content: string;
+    Comment: {
+      commentID: string;
+      userID: string;
+      content: string;
+      createdAt: string;
+    }[];
   };
   onDelete?: (id: string) => void;
 };
 
 export default function FeedItem({ feed, onDelete }: FeedItemProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedFeedId, setSelectedFeedId] = useState('');
+
+  const handleCommentClick = (feedId: string) => {
+    setSelectedFeedId(feedId);
+    setIsDialogOpen(true);
+  };
+
   const handleEdit = () => {
     console.log('게시글 수정');
   };
@@ -109,21 +127,36 @@ export default function FeedItem({ feed, onDelete }: FeedItemProps) {
             onHide={handleHide}
           />
         </CardHeader>
-        <CardContent>
-          <p className='mb-4 text-gray-800 dark:text-gray-200'>
-            {feed.content}
-          </p>
-        </CardContent>
+        <Link to={`/feed/${feed.feedID}`} className='block bg-auto'>
+          <CardContent>
+            <p className='mb-4 text-gray-800 dark:text-gray-200'>
+              {feed.content}
+            </p>
+          </CardContent>
+        </Link>
         <CardFooter className='flex items-center space-x-4 text-gray-500 dark:text-gray-400'>
           <div className='flex items-center space-x-4 text-gray-500 dark:text-gray-400'>
             <button className='flex items-center space-x-1 transition-colors hover:text-red-500'>
               <Heart className='h-4 w-4' />
               <span>12</span>
             </button>
-            <button className='flex items-center space-x-1 transition-colors hover:text-blue-500'>
+            {/* <button > */}
+            <button
+              // variant='outline'
+              // size='sm'
+              className='flex items-center space-x-1 transition-colors hover:text-blue-500'
+              onClick={(e) => {
+                // 이벤트 버블링 방지
+                e.stopPropagation();
+                e.preventDefault();
+                handleCommentClick(feed.feedID);
+              }}
+              // className='flex items-center gap-2'
+            >
               <MessageCircle className='h-4 w-4' />
-              <span>3</span>
+              <span>{feed.Comment.length > 0 ? feed.Comment.length : '0'}</span>
             </button>
+            {/* </button> */}
             <button className='flex items-center space-x-1 transition-colors hover:text-green-500'>
               <Share className='h-4 w-4' />
               <span>공유</span>
@@ -131,6 +164,12 @@ export default function FeedItem({ feed, onDelete }: FeedItemProps) {
           </div>
         </CardFooter>
       </Card>
+      <NewCommentModal
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        feedID={selectedFeedId}
+        feedContent={feed.content}
+      />
     </div>
   );
 }

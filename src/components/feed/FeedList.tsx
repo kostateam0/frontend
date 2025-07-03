@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import FeedItem from './FeedItem';
+import { Link } from 'react-router-dom';
 
 // GET 함수 http://localhost:4000/api/feed
 export const getFeeds = async () => {
@@ -38,14 +39,14 @@ export default function FeedList() {
     };
     fetchFeeds();
   }, []);
-  
+
   // 피드 삭제 핸들러
   const handleDeleteFeed = (id: string) => {
     setFeedList((prevFeeds) => prevFeeds.filter((feed) => feed.feedID !== id));
   };
 
   return (
-    <div className='space-y-4'>
+    <div className='flex flex-col space-y-4'>
       {feedList.map((feed, idx) => (
         <FeedItem key={idx} feed={feed} onDelete={handleDeleteFeed} />
       ))}

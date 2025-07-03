@@ -14,6 +14,7 @@ import AuthInitializer from './components/AuthInitializer';
 import Esports from './pages/EsportsPage';
 import LeaderBoardPage from './pages/LeaderBoardPage';
 import BetPage from './pages/BetPage';
+import FeedDetailPage from './pages/FeedDetailPage';
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ export default function App() {
                 {/* <Route path="summoner/:region/:name-:tag" element={<SummonerInfo/>} /> */}
                 <Route path='mypage' element={<Mypage />} />
                 <Route path='bet' element={<BetPage />} />
+                <Route path='feed/:feedID' element={<FeedDetailPage />} />
               </Route>
 
               {/* 레이아웃 없는 페이지 */}

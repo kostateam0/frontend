@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import MobileNav from '../components/MobileNav';
 import RightSidebar from '../components/RightSidebar'; // ✅ 추가
+import { Toaster } from '@/components/ui/sonner';
 
 export default function MainLayout() {
   return (
@@ -28,6 +29,7 @@ export default function MainLayout() {
             <Outlet />
           </div>
         </main>
+        <Toaster position='bottom-center'/>
         <RightSidebar /> {/* ✅ 컴포넌트 삽입 */}
       </div>
 
