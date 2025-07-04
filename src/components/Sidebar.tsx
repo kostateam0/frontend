@@ -1,8 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Trophy, Home, Search, User, Coins } from 'lucide-react';
+import { Trophy, Home, Search, User, Coins, Medal } from 'lucide-react';
 import LoginButton from '@/components/LoginButton';
 import { useEffect, useState } from 'react';
-import NewFeed from './feed/NewFeed';
 import { NewFeedButton } from './feed/NewFeedButton';
 
 export default function Sidebar() {
@@ -20,6 +19,7 @@ export default function Sidebar() {
     { icon: Home, label: '홈', path: '/' },
     { icon: Search, label: '전적검색', path: '/search' },
     { icon: Trophy, label: 'e-스포츠', path: '/esports' },
+    { icon: Medal, label: '리더보드', path: '/leaderboard' },
     { icon: User, label: '프로필', path: '/mypage' },
     { icon: Coins, label: '배팅', path: '/bet' },
   ];

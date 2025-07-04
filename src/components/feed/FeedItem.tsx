@@ -8,18 +8,16 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Heart, MessageCircle, Share } from 'lucide-react';
 import { formatDate } from '@/utils/formatDate';
-import { Button } from '../ui/button';
 import { useState } from 'react';
 import { NewCommentModal } from '../comment/NewCommentModal';
 import { Link } from 'react-router-dom';
+import { useUserStore } from '@/store/userStore';
 
 type FeedItemProps = {
   feed: {
     feedID: string;
     userID: string;
-    lp: number;
     createdAt: string;
-    champion: string;
     kills: number;
     deaths: number;
     assists: number;
@@ -37,6 +35,8 @@ type FeedItemProps = {
 };
 
 export default function FeedItem({ feed, onDelete }: FeedItemProps) {
+  const { user } = useUserStore();
+  const isOwner = (user as any)?.id === feed.userID;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedFeedId, setSelectedFeedId] = useState('');
 
@@ -96,8 +96,10 @@ export default function FeedItem({ feed, onDelete }: FeedItemProps) {
           <div className='flex items-center space-x-3'>
             <Avatar className='h-10 w-10'>
               <AvatarImage src='/placeholder.svg?height=40&width=40' />
-              <AvatarFallback className='h-10 w-10 bg-[#4a6741]'>
-                나
+              <AvatarFallback
+                className={`h-10 w-10 ${isOwner ? 'bg-[#4a6741]' : 'bg-[#0e87cd]'}`}
+              >
+                {isOwner ? '나' : '너'}
               </AvatarFallback>
             </Avatar>
             <div>
@@ -117,7 +119,7 @@ export default function FeedItem({ feed, onDelete }: FeedItemProps) {
             </div>
           </div>
           <FeedDropdownMenu
-            isOwner={true}
+            isOwner={isOwner}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onShare={handleShare}

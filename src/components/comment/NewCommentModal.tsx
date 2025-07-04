@@ -11,7 +11,8 @@ import {
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { toast } from "sonner"
+import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface CommentDialogProps {
   isOpen: boolean;
@@ -30,11 +31,12 @@ export function NewCommentModal({
 }: CommentDialogProps) {
   const [content, setContent] = useState(initialContent);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleSubmit = async () => {
     if (!content.trim()) {
-      toast.warning("댓글 내용을 입력해주세요.");
-      return
+      toast.warning('댓글 내용을 입력해주세요.');
+      return;
     }
 
     setIsSubmitting(true);
@@ -56,14 +58,17 @@ export function NewCommentModal({
       }
 
       const result = await response.json();
-      console.log(result)
-
-      toast.success(result.message || "댓글이 성공적으로 작성되었습니다.");
+      toast.success(result.message || '댓글이 성공적으로 작성되었습니다.');
 
       setContent('');
+
+      queryClient.invalidateQueries({ queryKey: ['feeds'] });
+
       onClose();
     } catch (error) {
-      toast.error(`댓글 작성 중 오류가 발생했습니다: ${error instanceof Error ? error.message : '알 수 없는 오류'}`);
+      toast.error(
+        `댓글 작성 중 오류가 발생했습니다: ${error instanceof Error ? error.message : '알 수 없는 오류'}`,
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -80,7 +85,9 @@ export function NewCommentModal({
       <DialogContent className='pointer-events-auto z-[100] sm:max-w-[425px] dark:bg-[#1a1a1a]'>
         <DialogHeader>
           <DialogTitle>댓글 작성</DialogTitle>
-          <DialogDescription className='dark:text-[#]'>{feedContent}</DialogDescription>
+          <DialogDescription className='dark:text-[#]'>
+            {feedContent}
+          </DialogDescription>
         </DialogHeader>
         <div className='grid gap-4 py-4'>
           <div className='grid gap-2'>

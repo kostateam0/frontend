@@ -35,10 +35,10 @@ export default function App() {
                 <Route path='mypage' element={<Mypage />} />
                 <Route path='bet' element={<BetPage />} />
                 <Route path='feed/:feedID' element={<FeedDetailPage />} />
+                <Route path='/leaderboard' element={<LeaderBoardPage />} />
               </Route>
 
               {/* 레이아웃 없는 페이지 */}
-              <Route path='/leaderboard' element={<LeaderBoardPage />} />
               <Route path='/login' element={<LoginPage />} />
               <Route path='/register' element={<RegisterPage />} />
             </Routes>
