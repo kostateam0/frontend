@@ -1,3 +1,4 @@
+// ✅ 프론트 Mypage.tsx
 import { useState } from "react";
 import { useUserStore } from "@/store/userStore";
 import SummonerProfile from "@/components/SummonerProfile";
@@ -7,7 +8,6 @@ import { Separator } from "@/components/ui/separator";
 
 const Mypage = () => {
   const { user, isLoggedIn, accessToken, setUser, logout } = useUserStore();
-
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState("");
 
@@ -24,6 +24,21 @@ const Mypage = () => {
       window.location.href = "/login";
     } catch (err) {
       alert("오류가 발생했습니다.");
+      console.error(err);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/authkit/user/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("로그아웃 실패");
+      logout();
+      window.location.href = "/login";
+    } catch (err) {
+      alert("로그아웃 중 오류가 발생했습니다.");
       console.error(err);
     }
   };
@@ -58,15 +73,11 @@ const Mypage = () => {
   return (
     <div className="min-h-screen bg-[#fff7b1] flex justify-center items-center p-6">
       <div className="w-full max-w-5xl bg-white rounded-[30px] border-4 border-black flex flex-col md:flex-row overflow-hidden shadow-lg">
-        {/* 왼쪽 이미지 영역 */}
         <div className="w-full md:w-1/2 p-6 bg-[#eee] border-r-4 border-black flex justify-center items-center">
           <img src="/assets/troll.png" alt="Troll" className="w-60 h-auto" />
         </div>
-
-        {/* 오른쪽 정보 영역 */}
         <div className="w-full md:w-1/2 p-10 space-y-6 text-black">
           <h2 className="text-3xl font-extrabold text-center">트롤 마이페이지</h2>
-
           <div className="space-y-2 text-center text-lg">
             <p>
               <strong>이름:</strong>{" "}
@@ -77,15 +88,8 @@ const Mypage = () => {
                     onChange={(e) => setEditedName(e.target.value)}
                     className="border px-2 py-1 rounded ml-2"
                   />
-                  <button onClick={handleSaveName} className="ml-2 text-blue-500">
-                    저장
-                  </button>
-                  <button
-                    onClick={() => setIsEditing(false)}
-                    className="ml-1 text-gray-500"
-                  >
-                    취소
-                  </button>
+                  <button onClick={handleSaveName} className="ml-2 text-blue-500">저장</button>
+                  <button onClick={() => setIsEditing(false)} className="ml-1 text-gray-500">취소</button>
                 </>
               ) : (
                 <>
@@ -108,12 +112,8 @@ const Mypage = () => {
           </div>
 
           <div className="flex flex-col md:flex-row justify-center gap-4">
-            <button
-              onClick={handleAccountDelete}
-              className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full border-2 border-black transition"
-            >
-              회원 탈퇴
-            </button>
+            <button onClick={handleAccountDelete} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full border-2 border-black transition">회원 탈퇴</button>
+            <button onClick={handleLogout} className="bg-gray-700 hover:bg-black text-white font-bold py-2 px-4 rounded-full border-2 border-black transition">로그아웃</button>
           </div>
 
           <Separator className="my-4" />
@@ -138,11 +138,12 @@ const Mypage = () => {
             </>
           ) : (
             <div className="text-center text-sm text-gray-600">
-              Riot 계정이 아직 바인딩되지 않았습니다.
-              <br />
+              Riot 계정이 아직 바인딩되지 않았습니다.<br />
               <button
                 onClick={() => {
-                  window.location.href = `https://auth.riotgames.com/authorize?...`;
+                  const redirectUri = encodeURIComponent("http://localhost:5173/rso/callback");
+                  const clientId = import.meta.env.VITE_RSO_CLIENT_ID;
+                  window.location.href = `https://auth.riotgames.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=openid`;
                 }}
                 className="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded"
               >
