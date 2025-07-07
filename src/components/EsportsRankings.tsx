@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 type TeamStanding = {
   rank: number;
@@ -11,35 +12,44 @@ type TeamStanding = {
   setDiff: number;
 };
 
+const fetchRankings = async (): Promise<TeamStanding[]> => {
+  const res = await fetch('http://localhost:4000/api/esports/LCKRankings');
+  if (!res.ok) throw new Error('순위 데이터를 불러오지 못했습니다.');
+  return res.json();
+};
+
 const EsportsRankings: React.FC = () => {
-  const [standings, setStandings] = useState<TeamStanding[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: standings,
+    isLoading,
+    error,
+  } = useQuery<TeamStanding[]>({
+    queryKey: ['esportsRankings'],
+    queryFn: fetchRankings,
+    staleTime: 1000 * 60 * 60 * 24, // 24시간
+  });
 
-  useEffect(() => {
-    const fetchStandings = async () => {
-      try {
-        const res = await fetch(
-          'http://localhost:4000/api/esports/LCKRankings',
-        );
-        const data = await res.json();
-        setStandings(data);
-      } catch (error: any) {
-        console.error(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStandings();
-  }, []);
-
-  if (loading) return <div>Loading...</div>;
+  if (isLoading)
+    return <div className='py-8 text-center text-white'>불러오는 중...</div>;
+  if (error)
+    return (
+      <div className='py-8 text-center text-red-400'>
+        순위 데이터를 불러오지 못했습니다.
+      </div>
+    );
+  if (!standings || standings.length === 0)
+    return (
+      <div className='py-8 text-center text-white'>순위 데이터가 없습니다.</div>
+    );
 
   return (
-    <div className='mx-auto min-h-[400px] w-full max-w-4xl rounded-xl bg-[#23232b] p-4 shadow-lg'>
-      <h1 className='mb-4 text-2xl font-bold'>2025 LCK Spring 순위표</h1>
-      <table className='mx-auto w-full max-w-4xl table-auto border-collapse overflow-hidden rounded-xl bg-[#23232b] text-white'>
+    <div className='mx-auto min-h-[400px] w-full max-w-4xl rounded-xl bg-[#10193A] p-4 shadow-lg'>
+      <h1 className='mb-4 text-2xl font-bold text-[#B6C2E2]'>
+        2025 LCK Spring 순위표
+      </h1>
+      <table className='mx-auto w-full max-w-4xl table-auto border-collapse overflow-hidden rounded-xl bg-[#10193A] text-white'>
         <thead>
-          <tr className='bg-[#292936] text-sm text-gray-300'>
+          <tr className='bg-[#1A2550] text-sm text-[#B6C2E2]'>
             <th className='px-4 py-3 text-center font-semibold'>Rank</th>
             <th className='px-4 py-3 text-center font-semibold'>Team</th>
             <th className='px-4 py-3 text-center font-semibold'>W-L(%)</th>
@@ -51,15 +61,16 @@ const EsportsRankings: React.FC = () => {
           {standings.map((team) => (
             <tr
               key={team.name}
-              className='border-b border-[#2e2e3a] text-base'
-              style={{ height: '56px' }} // 행 높이 고정
+              className='border-b border-[#23232b] text-base'
+              style={{ height: '56px' }}
             >
               <td className='px-4 py-0 text-center align-middle font-bold whitespace-nowrap text-[#b6eaff]'>
                 {team.rank}
               </td>
               <td className='px-4 py-0 text-center align-middle whitespace-nowrap'>
-                {/* 팀 로고가 있다면 <img src={team.logo} ... /> 추가 가능 */}
-                <span className='text-lg font-bold'>{team.name}</span>
+                <span className='text-lg font-bold text-white'>
+                  {team.name}
+                </span>
               </td>
               <td className='px-4 py-0 text-center align-middle whitespace-nowrap'>
                 <span className='inline-block font-bold text-white'>
@@ -73,8 +84,9 @@ const EsportsRankings: React.FC = () => {
                 </span>
               </td>
               <td className='px-4 py-0 text-center align-middle whitespace-nowrap'>
-                <span className='font-semibold'>
-                  {team.setWin}W {team.setLose}L
+                <span className='font-semibold text-white'>
+                  {team.setWin}W{' '}
+                  <span className='text-[#ff6b81]'>{team.setLose}L</span>
                 </span>
               </td>
               <td
@@ -82,7 +94,7 @@ const EsportsRankings: React.FC = () => {
                   team.setDiff >= 0 ? 'text-[#6ee7b7]' : 'text-[#ff6b81]'
                 }`}
               >
-                {team.setDiff}
+                {team.setDiff >= 0 ? `+${team.setDiff}` : team.setDiff}
               </td>
             </tr>
           ))}
