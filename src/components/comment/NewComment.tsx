@@ -1,18 +1,10 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogOverlay,
-  DialogTitle,
-} from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface CommentDialogProps {
   isOpen: boolean;
@@ -26,6 +18,7 @@ export function NewComment({ initialContent = '' }: CommentDialogProps) {
   const [content, setContent] = useState(initialContent);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { feedID } = useParams();
+  const queryClient = useQueryClient();
 
   const handleSubmit = async () => {
     if (!content.trim()) {
@@ -57,6 +50,7 @@ export function NewComment({ initialContent = '' }: CommentDialogProps) {
       toast.success(result.message || '댓글이 성공적으로 작성되었습니다.');
 
       setContent('');
+      queryClient.invalidateQueries({ queryKey: ['feeds'] });
     } catch (error) {
       toast.error(
         `댓글 작성 중 오류가 발생했습니다: ${error instanceof Error ? error.message : '알 수 없는 오류'}`,

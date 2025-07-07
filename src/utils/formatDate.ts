@@ -3,7 +3,7 @@ const ONE_HOUR = 60 * 60;
 const ONE_DAY = 60 * 60 * 24;
 const ONE_WEEK = 60 * 60 * 24 * 7;
 
-export function formatDate(rawDate: string): string {
+export function formatDate(rawDate: string | Date): string {
   const date = new Date(rawDate);
   const now = new Date();
   const diff = Math.floor((now.getTime() - date.getTime()) / 1000); // 초 단위 차이
