@@ -17,10 +17,10 @@ interface Player {
   name: string;
 }
 
-const SERIES_OPTIONS = [
-  { label: 'LCK', value: 9164 },
-  { label: 'LPL', value: 9152 },
-  { label: 'MSI', value: 9418 },
+const LEAGUE_OPTIONS = [
+  { label: 'LCK', value: 'LCK', season: '2025 Spring' },
+  { label: 'LPL', value: 'LPL', season: '2025 Spring' },
+  { label: 'MSI', value: 'MSI', season: '2025' },
 ];
 
 const ROLE_KR: Record<string, string> = {
@@ -36,34 +36,38 @@ const ROLE_KR: Record<string, string> = {
 
 const EsportsTeams: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
-  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
+  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [seriesId, setSeriesId] = useState<number>(9164); // default LCK
+  const [league, setLeague] = useState<string>('LCK');
+  const [season, setSeason] = useState<string>('2025 Spring');
 
   useEffect(() => {
     const fetchTeams = async () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `http://localhost:4000/api/esports/teams?seriesId=${seriesId}`,
+          `http://localhost:4000/api/esports/roster?league=${encodeURIComponent(league)}&season=${encodeURIComponent(season)}`,
         );
+        if (!res.ok) throw new Error('로스터 데이터를 불러오지 못했습니다.');
         const data = await res.json();
         setTeams(data);
         if (data.length > 0) {
-          setSelectedTeamId(data[0].id);
+          setSelectedTeamId(data[0].id?.toString() ?? null);
         } else {
           setSelectedTeamId(null);
         }
       } catch (error: any) {
+        setTeams([]);
+        setSelectedTeamId(null);
         console.error(error.message);
       } finally {
         setLoading(false);
       }
     };
     fetchTeams();
-  }, [seriesId]);
+  }, [league, season]);
 
-  const selectedTeam = teams.find((t) => t.id === selectedTeamId);
+  const selectedTeam = teams.find((t) => t.id?.toString() === selectedTeamId);
 
   if (loading)
     return (
@@ -99,12 +103,18 @@ const EsportsTeams: React.FC = () => {
             {/* 드롭다운 */}
             <div className='flex flex-col gap-2 md:flex-row md:items-center md:gap-2'>
               <select
-                id='series-select'
+                id='league-select'
                 className='rounded border border-[#23232b] bg-[#18181c] px-3 py-2 text-[#B6C2E2] focus:outline-none'
-                value={seriesId}
-                onChange={(e) => setSeriesId(Number(e.target.value))}
+                value={league}
+                onChange={(e) => {
+                  const selected = LEAGUE_OPTIONS.find(
+                    (opt) => opt.value === e.target.value,
+                  );
+                  setLeague(selected?.value || 'LCK');
+                  setSeason(selected?.season || '2025 Spring');
+                }}
               >
-                {SERIES_OPTIONS.map((opt) => (
+                {LEAGUE_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
                     {opt.label}
                   </option>
@@ -114,7 +124,7 @@ const EsportsTeams: React.FC = () => {
                 id='team-select'
                 className='min-w-[100px] rounded border border-[#23232b] bg-[#18181c] px-3 py-2 text-[#B6C2E2] focus:outline-none'
                 value={selectedTeamId ?? ''}
-                onChange={(e) => setSelectedTeamId(Number(e.target.value))}
+                onChange={(e) => setSelectedTeamId(e.target.value)}
               >
                 {teams.map((team) => (
                   <option key={team.id} value={team.id}>
