@@ -1,5 +1,4 @@
-// ✅ 프론트 Mypage.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/userStore";
 import SummonerProfile from "@/components/SummonerProfile";
 import SummonerRankTier from "@/components/SummonerRankTier";
@@ -10,6 +9,32 @@ const Mypage = () => {
   const { user, isLoggedIn, accessToken, setUser, logout } = useUserStore();
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/authkit/user/profile", {
+          method: "GET",
+          credentials: "include",
+          headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+        });
+
+        if (!res.ok) throw new Error("인증 실패");
+
+        const { user: profile } = await res.json();
+        
+        setUser(profile, accessToken ?? "");
+      } catch {
+        logout();
+        window.location.href = "/login";
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleAccountDelete = async () => {
     if (!confirm("정말로 탈퇴하시겠습니까?")) return;
@@ -63,6 +88,9 @@ const Mypage = () => {
     }
   };
 
+  if (isLoading)
+    return <div className="text-center mt-10">로딩 중...</div>;
+
   if (!isLoggedIn || !user)
     return (
       <div className="text-center mt-10 text-red-500">
@@ -97,7 +125,7 @@ const Mypage = () => {
                   <button
                     onClick={() => {
                       setIsEditing(true);
-                      setEditedName(user.name);
+                      setEditedName(user.name ?? "");
                     }}
                     className="ml-2 text-sm text-blue-500 underline"
                   >
@@ -109,6 +137,9 @@ const Mypage = () => {
             <p>
               <strong>이메일:</strong> {user.email}
             </p>
+            <p>
+              <strong>포인트:</strong> {user.point}
+            </p>
           </div>
 
           <div className="flex flex-col md:flex-row justify-center gap-4">
@@ -118,39 +149,10 @@ const Mypage = () => {
 
           <Separator className="my-4" />
 
-          {user.rsoAccount ? (
-            <>
-              <SummonerProfile
-                summoner={{
-                  name: user.rsoAccount.gameName,
-                  profileIconId: user.rsoAccount.profileIconId,
-                  summonerLevel: user.rsoAccount.summonerLevel,
-                  revisionDate: Date.now(),
-                }}
-                summonerName={user.rsoAccount.gameName}
-                tag={user.rsoAccount.tagLine}
-              />
-              <SummonerRankTier puuid={user.rsoAccount.puuid} />
-              <SummonerChampMastery
-                puuid={user.rsoAccount.puuid}
-                summonerName={user.rsoAccount.gameName}
-              />
-            </>
-          ) : (
-            <div className="text-center text-sm text-gray-600">
-              Riot 계정이 아직 바인딩되지 않았습니다.<br />
-              <button
-                onClick={() => {
-                  const redirectUri = encodeURIComponent("http://localhost:5173/rso/callback");
-                  const clientId = import.meta.env.VITE_RSO_CLIENT_ID;
-                  window.location.href = `https://auth.riotgames.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=openid`;
-                }}
-                className="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded"
-              >
-                Riot 계정 연결하기
-              </button>
-            </div>
-          )}
+          <div className="bg-gray-100 p-4 rounded-lg text-xs text-left text-black overflow-auto max-h-96">
+            <h3 className="font-semibold mb-2">🧑‍💻 유저 객체 전체 보기 (디버그)</h3>
+            <pre>{JSON.stringify(user, null, 2)}</pre>
+          </div>
         </div>
       </div>
     </div>

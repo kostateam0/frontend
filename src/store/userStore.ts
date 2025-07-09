@@ -1,19 +1,30 @@
 import { create } from "zustand";
 
+interface Feed {
+  content: string;
+  createdAt: string;
+}
+
+interface Bet {
+  matchId: number;
+  team: string;
+  amount: number;
+  createdAt: string;
+}
+
 interface User {
-    id: string;
-    email: string;
-    name: string; // ✅ 반드시 추가!
-    nickname?: string;
-    rsoAccount?: {
-      gameName: string;
-      tagLine: string;
-      puuid: string;
-      profileIconId: number;
-      summonerLevel: number;
-    };
-  }
-  
+  id: string;
+  email: string;
+  name: string | null;
+  point: number;
+  role: string;
+  provider: string;
+  createdAt: string;
+  isBanned: boolean;
+  feeds: { content: string; createdAt: string }[];
+  bets: { matchId: number; team: string; amount: number; createdAt: string }[];
+}
+
 
 interface UserStore {
   user: User | null;
