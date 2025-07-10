@@ -12,6 +12,7 @@ export interface Match {
   winner?: string;
   startTime: string;
   endTime?: string;
+  result?: string | null;
 }
 
 export const usePastMatches = () => {

@@ -10,6 +10,7 @@ export interface Match {
   blueTeamImage?: string;
   redTeamImage?: string;
   startTime: string;
+  result?: string | null;
 }
 
 export const useUpcomingMatches = () => {
