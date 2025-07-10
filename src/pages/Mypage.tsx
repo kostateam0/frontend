@@ -1,15 +1,83 @@
-// ✅ 프론트 Mypage.tsx
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/userStore";
-import SummonerProfile from "@/components/SummonerProfile";
-import SummonerRankTier from "@/components/SummonerRankTier";
-import SummonerChampMastery from "@/components/SummonerChampMastery";
-import { Separator } from "@/components/ui/separator";
+import {
+  Heart,
+  MessageCircle,
+  Repeat2,
+  Share,
+  Trophy,
+  TrendingUp,
+  User,
+  Mail,
+  Coins,
+  LogOut,
+  UserX,
+  Edit3,
+  Check,
+  X,
+  ChevronLeft,
+  Home,
+  Search,
+  Bell,
+} from "lucide-react";
+
+const TABS = ["dashboard", "feeds", "bets"] as const;
+type Tab = typeof TABS[number];
+
+interface Feed {
+  content: string;
+  createdAt: string;
+}
+
+interface Bet {
+  matchId: number;
+  team: string;
+  amount: number;
+  createdAt: string;
+}
+
+interface StatCardProps {
+  icon: React.ElementType;
+  label: string;
+  value: string | number;
+  color: string;
+}
+
+interface FeedCardProps {
+  feed: Feed;
+}
+
+interface BetCardProps {
+  bet: Bet;
+}
 
 const Mypage = () => {
   const { user, isLoggedIn, accessToken, setUser, logout } = useUserStore();
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [tab, setTab] = useState<Tab>("dashboard");
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch("http://localhost:4000/authkit/user/profile", {
+          method: "GET",
+          credentials: "include",
+          headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
+        });
+        if (!res.ok) throw new Error("인증 실패");
+        const { user: profile } = await res.json();
+        setUser(profile, accessToken ?? "");
+      } catch {
+        logout();
+        window.location.href = "/login";
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const handleAccountDelete = async () => {
     if (!confirm("정말로 탈퇴하시겠습니까?")) return;
@@ -22,24 +90,21 @@ const Mypage = () => {
       alert("회원 탈퇴가 완료되었습니다.");
       logout();
       window.location.href = "/login";
-    } catch (err) {
+    } catch {
       alert("오류가 발생했습니다.");
-      console.error(err);
     }
   };
 
   const handleLogout = async () => {
     try {
-      const res = await fetch("http://localhost:4000/authkit/user/logout", {
+      await fetch("http://localhost:4000/authkit/user/logout", {
         method: "POST",
         credentials: "include",
       });
-      if (!res.ok) throw new Error("로그아웃 실패");
       logout();
       window.location.href = "/login";
-    } catch (err) {
+    } catch {
       alert("로그아웃 중 오류가 발생했습니다.");
-      console.error(err);
     }
   };
 
@@ -57,98 +122,101 @@ const Mypage = () => {
       if (!res.ok) throw new Error("수정 실패");
       if (user) setUser({ ...user, name: editedName }, accessToken!);
       setIsEditing(false);
-    } catch (err) {
+    } catch {
       alert("수정 중 오류가 발생했습니다.");
-      console.error(err);
     }
   };
 
-  if (!isLoggedIn || !user)
-    return (
-      <div className="text-center mt-10 text-red-500">
-        로그인 정보가 없습니다. <a href="/login" className="underline">로그인</a>
-      </div>
-    );
+  if (isLoading) return <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center text-white">⏳ 로딩 중...</div>;
+  if (!isLoggedIn || !user) return <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center text-white">🔐 로그인 필요</div>;
 
   return (
-    <div className="min-h-screen bg-[#fff7b1] flex justify-center items-center p-6">
-      <div className="w-full max-w-5xl bg-white rounded-[30px] border-4 border-black flex flex-col md:flex-row overflow-hidden shadow-lg">
-        <div className="w-full md:w-1/2 p-6 bg-[#eee] border-r-4 border-black flex justify-center items-center">
-          <img src="/assets/troll.png" alt="Troll" className="w-60 h-auto" />
+    <div className="min-h-screen bg-[#0a0a0a] pb-24 px-4 py-6">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2 text-white">
+            <ChevronLeft size={20} />
+            <h1 className="text-xl font-bold">트롤 마이페이지</h1>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={handleLogout}><LogOut className="text-gray-400 hover:text-white" size={18} /></button>
+            <button onClick={handleAccountDelete}><UserX className="text-red-500 hover:text-red-700" size={18} /></button>
+          </div>
         </div>
-        <div className="w-full md:w-1/2 p-10 space-y-6 text-black">
-          <h2 className="text-3xl font-extrabold text-center">트롤 마이페이지</h2>
-          <div className="space-y-2 text-center text-lg">
-            <p>
-              <strong>이름:</strong>{" "}
-              {isEditing ? (
-                <>
-                  <input
-                    value={editedName}
-                    onChange={(e) => setEditedName(e.target.value)}
-                    className="border px-2 py-1 rounded ml-2"
-                  />
-                  <button onClick={handleSaveName} className="ml-2 text-blue-500">저장</button>
-                  <button onClick={() => setIsEditing(false)} className="ml-1 text-gray-500">취소</button>
-                </>
+
+        {/* Profile Card */}
+        <div className="bg-[#1c1c1e] rounded-xl p-6 mb-6 shadow-lg text-white">
+          <div className="flex items-center gap-4">
+            <img src="/assets/troll.png" className="w-20 h-20 rounded-full border-2 border-yellow-500" />
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                {isEditing ? (
+                  <>
+                    <input value={editedName} onChange={(e) => setEditedName(e.target.value)} className="bg-[#2c2c2e] px-2 py-1 text-white rounded" />
+                    <button onClick={handleSaveName}><Check size={16} className="text-green-500" /></button>
+                    <button onClick={() => setIsEditing(false)}><X size={16} className="text-gray-400" /></button>
+                  </>
+                ) : (
+                  <>
+                    <h2 className="text-2xl font-semibold">{user.name}</h2>
+                    <button onClick={() => { setIsEditing(true); setEditedName(user.name ?? ""); }}><Edit3 size={16} className="text-gray-400" /></button>
+                  </>
+                )}
+              </div>
+              <p className="text-sm mt-1 flex items-center gap-1"><Mail size={14} /> {user.email}</p>
+              <p className="text-sm mt-1 flex items-center gap-1"><Coins size={14} /> {user.point}P</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex mb-4">
+          {TABS.map((t) => (
+            <button
+              key={t}
+              className={`flex-1 py-2 rounded-t-md text-sm font-semibold ${
+                tab === t ? "bg-yellow-500 text-black" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              }`}
+              onClick={() => setTab(t)}
+            >
+              {t === "dashboard" ? "📊 대시보드" : t === "feeds" ? "📝 내가 쓴 글" : "🎯 베팅 목록"}
+            </button>
+          ))}
+        </div>
+
+        {/* Content */}
+        <div className="bg-[#1c1c1e] rounded-b-md p-6 text-white">
+          {tab === "dashboard" && (
+            <div className="grid grid-cols-2 gap-4">
+              <StatCard icon={MessageCircle} label="총 피드" value={user.feeds?.length || 0} color="bg-blue-500" />
+              <StatCard icon={Trophy} label="총 베팅" value={user.bets?.length || 0} color="bg-green-500" />
+              <StatCard icon={TrendingUp} label="포인트" value={user.point} color="bg-purple-500" />
+              <StatCard icon={User} label="등급" value="A+" color="bg-yellow-500" />
+            </div>
+          )}
+
+          {tab === "feeds" && (
+            <div className="space-y-4">
+              {user.feeds.length === 0 ? (
+                <p className="text-center text-gray-400 py-8">작성한 글이 없습니다.</p>
               ) : (
-                <>
-                  {user.name}
-                  <button
-                    onClick={() => {
-                      setIsEditing(true);
-                      setEditedName(user.name);
-                    }}
-                    className="ml-2 text-sm text-blue-500 underline"
-                  >
-                    수정
-                  </button>
-                </>
+                user.feeds.map((feed: Feed, i: number) => (
+                  <FeedCard key={i} feed={feed} />
+                ))
               )}
-            </p>
-            <p>
-              <strong>이메일:</strong> {user.email}
-            </p>
-          </div>
+            </div>
+          )}
 
-          <div className="flex flex-col md:flex-row justify-center gap-4">
-            <button onClick={handleAccountDelete} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full border-2 border-black transition">회원 탈퇴</button>
-            <button onClick={handleLogout} className="bg-gray-700 hover:bg-black text-white font-bold py-2 px-4 rounded-full border-2 border-black transition">로그아웃</button>
-          </div>
-
-          <Separator className="my-4" />
-
-          {user.rsoAccount ? (
-            <>
-              <SummonerProfile
-                summoner={{
-                  name: user.rsoAccount.gameName,
-                  profileIconId: user.rsoAccount.profileIconId,
-                  summonerLevel: user.rsoAccount.summonerLevel,
-                  revisionDate: Date.now(),
-                }}
-                summonerName={user.rsoAccount.gameName}
-                tag={user.rsoAccount.tagLine}
-              />
-              <SummonerRankTier puuid={user.rsoAccount.puuid} />
-              <SummonerChampMastery
-                puuid={user.rsoAccount.puuid}
-                summonerName={user.rsoAccount.gameName}
-              />
-            </>
-          ) : (
-            <div className="text-center text-sm text-gray-600">
-              Riot 계정이 아직 바인딩되지 않았습니다.<br />
-              <button
-                onClick={() => {
-                  const redirectUri = encodeURIComponent("http://localhost:5173/rso/callback");
-                  const clientId = import.meta.env.VITE_RSO_CLIENT_ID;
-                  window.location.href = `https://auth.riotgames.com/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=openid`;
-                }}
-                className="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded"
-              >
-                Riot 계정 연결하기
-              </button>
+          {tab === "bets" && (
+            <div className="space-y-4">
+              {user.bets.length === 0 ? (
+                <p className="text-center text-gray-400 py-8">베팅한 경기가 없습니다.</p>
+              ) : (
+                user.bets.map((bet: Bet, i: number) => (
+                  <BetCard key={i} bet={bet} />
+                ))
+              )}
             </div>
           )}
         </div>
@@ -156,5 +224,52 @@ const Mypage = () => {
     </div>
   );
 };
+
+const StatCard = ({ icon: Icon, label, value, color }: StatCardProps) => (
+  <div className="bg-[#2c2c2e] rounded-lg p-4 shadow border border-gray-700 text-sm">
+    <div className="flex items-center gap-3">
+      <div className={`p-2 rounded-full ${color}`}><Icon size={20} className="text-white" /></div>
+      <div>
+        <div className="text-gray-400">{label}</div>
+        <div className="text-lg font-bold text-white">{value}</div>
+      </div>
+    </div>
+  </div>
+);
+
+const FeedCard = ({ feed }: FeedCardProps) => (
+  <div className="bg-[#2a2a2a] rounded-lg p-4 shadow">
+    <div className="flex items-start gap-3">
+      <img src="/assets/troll.png" className="w-10 h-10 rounded-full" />
+      <div className="flex-1">
+        <div className="text-white font-semibold mb-1">{feed.content}</div>
+        <div className="text-gray-400 text-xs">{new Date(feed.createdAt).toLocaleString()}</div>
+        <div className="flex gap-4 mt-2 text-gray-500 text-sm">
+          <MessageCircle size={14} />
+          <Repeat2 size={14} />
+          <Heart size={14} />
+          <Share size={14} />
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+const BetCard = ({ bet }: BetCardProps) => (
+  <div className="bg-[#2a2a2a] rounded-lg p-4 shadow">
+    <div className="flex justify-between items-center mb-2">
+      <div className="flex items-center gap-2">
+        <Trophy size={16} className="text-yellow-500" />
+        <span className="font-semibold text-white">Match #{bet.matchId}</span>
+      </div>
+      <span className="text-xs text-blue-400 font-medium">베팅중</span>
+    </div>
+    <div className="text-sm text-gray-300">
+      <div>팀: {bet.team}</div>
+      <div>베팅액: <span className="text-blue-400 font-bold">{bet.amount}P</span></div>
+      <div className="text-xs text-gray-500">{new Date(bet.createdAt).toLocaleString()}</div>
+    </div>
+  </div>
+);
 
 export default Mypage;
