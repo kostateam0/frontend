@@ -3,35 +3,55 @@ import { useUpcomingMatches } from "@/hooks/useUpcomingMatches";
 import { usePastMatches } from "@/hooks/usePastMatches";
 import BetBox from "@/components/BetBox";
 
+type View = "upcoming" | "past" | "ongoing";
+
 const BetPage = () => {
-  const [view, setView] = useState<"upcoming" | "past">("upcoming");
+  const [view, setView] = useState<View>("upcoming");
 
   const { matches: upcomingMatches, loading: loadingUpcoming } = useUpcomingMatches();
   const { matches: pastMatches, loading: loadingPast } = usePastMatches();
 
   const now = Date.now();
 
-  // 필터: 베팅 가능한 경기
   const filteredUpcoming = upcomingMatches
+    .filter((m) => m.blueTeam && m.redTeam && new Date(m.startTime).getTime() > now)
+    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+
+  const filteredOngoing = upcomingMatches
     .filter(
       (m) =>
-        m.blueTeam && m.redTeam && new Date(m.startTime).getTime() > now
+        m.blueTeam &&
+        m.redTeam &&
+        new Date(m.startTime).getTime() <= now &&
+        !m.result // 결과가 아직 없는 경우
     )
     .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
 
-  // 로딩 상태 처리
-  if ((view === "upcoming" && loadingUpcoming) || (view === "past" && loadingPast)) {
-    return <div className="p-4 text-white">로딩 중...</div>;
-  }
+  let displayedMatches = [];
+  let isLoading = false;
 
-  const displayedMatches = view === "upcoming" ? filteredUpcoming : pastMatches;
+  if (view === "upcoming") {
+    displayedMatches = filteredUpcoming;
+    isLoading = loadingUpcoming;
+  } else if (view === "past") {
+    displayedMatches = pastMatches;
+    isLoading = loadingPast;
+  } else {
+    displayedMatches = filteredOngoing;
+    isLoading = loadingUpcoming;
+  }
 
   return (
     <div className="min-h-screen bg-[#111111] p-6">
       <h1 className="mb-6 text-2xl font-bold text-[#8B6914]">
-        {view === "upcoming" ? "🔥 베팅 가능한 경기" : "📜 지난 경기"}
+        {view === "upcoming"
+          ? "🔥 베팅 가능한 경기"
+          : view === "past"
+          ? "📜 지난 경기"
+          : "⚔️ 진행 중인 경기"}
       </h1>
 
+      {/* 탭 메뉴 */}
       <div className="mb-6 flex gap-4">
         <button
           onClick={() => setView("upcoming")}
@@ -49,9 +69,19 @@ const BetPage = () => {
         >
           지난 경기
         </button>
+        <button
+          onClick={() => setView("ongoing")}
+          className={`px-4 py-2 rounded ${
+            view === "ongoing" ? "bg-yellow-600 text-white" : "bg-gray-700 text-gray-300"
+          }`}
+        >
+          진행 중
+        </button>
       </div>
 
-      {displayedMatches.length === 0 ? (
+      {isLoading ? (
+        <div className="text-white">로딩 중...</div>
+      ) : displayedMatches.length === 0 ? (
         <div className="text-white">경기 정보가 없습니다.</div>
       ) : (
         <div className="flex flex-col gap-6">
