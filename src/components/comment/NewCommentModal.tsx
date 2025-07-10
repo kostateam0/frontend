@@ -33,7 +33,9 @@ export function NewCommentModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!content.trim()) {
       toast.warning('댓글 내용을 입력해주세요.');
       return;
@@ -74,9 +76,11 @@ export function NewCommentModal({
     }
   };
 
-  const handleClose = () => {
-    setContent(initialContent);
-    onClose();
+  const handleClose = (open: boolean) => {
+    if (!open) {
+      setContent(initialContent);
+      onClose();
+    }
   };
 
   return (
@@ -105,7 +109,7 @@ export function NewCommentModal({
         <DialogFooter>
           <Button
             variant='outline'
-            onClick={handleClose}
+            onClick={() => handleClose(false)}
             disabled={isSubmitting}
           >
             취소

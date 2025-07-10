@@ -10,35 +10,35 @@ import { Heart, MessageCircle, Share } from 'lucide-react';
 import { formatDate } from '@/utils/formatDate';
 import { useState } from 'react';
 import { NewCommentModal } from '../comment/NewCommentModal';
-import { Link } from 'react-router-dom';
 import { useUserStore } from '@/store/userStore';
+import type { Feed } from '@/types/feed'
+type onDelete = (id: string) => void;
 
-type FeedItemProps = {
-  feed: {
-    feedID: string;
-    userID: string;
-    createdAt: string;
-    kills: number;
-    deaths: number;
-    assists: number;
-    cs: number;
-    duration: string;
-    content: string;
-    Comment: {
-      commentID: string;
-      userID: string;
-      content: string;
-      createdAt: string;
-    }[];
-  };
-  onDelete?: (id: string) => void;
-};
-
-export default function FeedItem({ feed, onDelete }: FeedItemProps) {
-  const { user } = useUserStore();
+export default function FeedItem({ feed, onDelete }: { feed: Feed; onDelete?: onDelete }) {
+  const { user, isLoggedIn } = useUserStore();
   const isOwner = (user as any)?.id === feed.userID;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedFeedId, setSelectedFeedId] = useState('');
+  const [isLiked, setIsLiked] = useState(feed.isLiked); // 초기값은 feed.isLiked로 설정
+  const [likeCount, setLikeCount] = useState(feed._count.likes); // 기본값은 서버에서 받아오는 값으로 설정
+
+  const handleLikeClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isLiked) {
+      setLikeCount((prev) => prev - 1);
+    } else {
+      setLikeCount((prev) => prev + 1);
+    }
+    setIsLiked((prev) => !prev);
+
+    // 선택적으로 서버에 반영
+    fetch(`/api/feed/${feed.feedID}/like`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userID: user, like: !isLiked }),
+    }).catch((err) => console.error('좋아요 요청 실패:', err));
+  };
 
   const handleCommentClick = (feedId: string) => {
     setSelectedFeedId(feedId);
@@ -50,7 +50,7 @@ export default function FeedItem({ feed, onDelete }: FeedItemProps) {
   };
 
   const handleDelete = () => {
-    fetch(`http://localhost:4000/api/feed/${feed.feedID}`, {
+    fetch(`/api/feed/${feed.feedID}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -91,6 +91,7 @@ export default function FeedItem({ feed, onDelete }: FeedItemProps) {
   return (
     <div className='w-full space-y-4'>
       {/* 내가 작성한 게시글 예시 */}
+
       <Card className='border border-gray-200 bg-white dark:border-[#1a1a1a] dark:bg-[#1a1a1a]'>
         <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
           <div className='flex items-center space-x-3'>
@@ -109,7 +110,7 @@ export default function FeedItem({ feed, onDelete }: FeedItemProps) {
                     {feed.userID}
                   </span>
                   <span className='ml-1 rounded bg-yellow-600 px-2 py-0.5 text-xs font-semibold text-black'>
-                    Challenger
+                    정보없음
                   </span>
                 </div>
               </div>
@@ -129,36 +130,70 @@ export default function FeedItem({ feed, onDelete }: FeedItemProps) {
             onHide={handleHide}
           />
         </CardHeader>
-        <Link to={`/feed/${feed.feedID}`} className='block bg-auto'>
-          <CardContent>
-            <p className='mb-4 text-gray-800 dark:text-gray-200'>
-              {feed.content}
-            </p>
-          </CardContent>
-        </Link>
+        {/* <Link to={`/feed/${feed.feedID}`} className='block bg-auto'> */}
+        <CardContent>
+          <p className='mb-4 text-gray-800 dark:text-gray-200'>
+            {feed.content}
+          </p>
+        </CardContent>
+        {/* </Link> */}
         <CardFooter className='flex items-center space-x-4 text-gray-500 dark:text-gray-400'>
           <div className='flex items-center space-x-4 text-gray-500 dark:text-gray-400'>
-            <button className='flex items-center space-x-1 transition-colors hover:text-red-500'>
-              <Heart className='h-4 w-4' />
-              <span>12</span>
-            </button>
-            {/* <button > */}
-            <button
-              // variant='outline'
-              // size='sm'
-              className='flex items-center space-x-1 transition-colors hover:text-blue-500'
-              onClick={(e) => {
-                // 이벤트 버블링 방지
-                e.stopPropagation();
-                e.preventDefault();
-                handleCommentClick(feed.feedID);
-              }}
-              // className='flex items-center gap-2'
-            >
-              <MessageCircle className='h-4 w-4' />
-              <span>{feed.Comment.length > 0 ? feed.Comment.length : '0'}</span>
-            </button>
-            {/* </button> */}
+            {!isLoggedIn && (
+              <button
+                onClick={(e) => {
+                  alert('로그인 후 이용 가능합니다.');
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                className='flex items-center space-x-1 transition-colors hover:text-blue-500'
+              >
+                <Heart className='h-4 w-4' />
+                <span>{feed._count.likes}</span>
+              </button>
+            )}
+            {isLoggedIn && (
+              <button
+                onClick={handleLikeClick}
+                className={`flex items-center space-x-1 transition-colors ${
+                  isLiked ? 'text-red-500' : 'hover:text-red-500'
+                }`}
+              >
+                <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500' : ''}`} />
+                <span>{likeCount}</span>
+              </button>
+            )}
+            {!isLoggedIn && (
+              <button
+                onClick={(e) => {
+                  alert('로그인 후 이용 가능합니다.');
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                className='flex items-center space-x-1 transition-colors hover:text-blue-500'
+              >
+                <MessageCircle className='h-4 w-4' />
+                <span>
+                  {feed.Comment.length > 0 ? feed.Comment.length : '0'}
+                </span>
+              </button>
+            )}
+            {isLoggedIn && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleCommentClick(feed.feedID);
+                }}
+                className='flex items-center space-x-1 transition-colors hover:text-blue-500'
+              >
+                <MessageCircle className='h-4 w-4' />
+                <span>
+                  {feed.Comment.length > 0 ? feed.Comment.length : '0'}
+                </span>
+              </button>
+            )}
+
             <button className='flex items-center space-x-1 transition-colors hover:text-green-500'>
               <Share className='h-4 w-4' />
               <span>공유</span>

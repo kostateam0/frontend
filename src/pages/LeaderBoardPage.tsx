@@ -23,7 +23,18 @@ const fetchLeaderBoard = async () => {
 };
 
 export default function LeaderBoardPage() {
-  const [leaderboardDate, setLeaderboardDate] = useState('');
+  interface LeaderboardEntry {
+    summonerId: string;
+    summonerName: string;
+    profileIconId: number;
+    leaguePoints: number;
+    wins: number;
+    losses: number;
+    summonerLevel: number;
+    // Add other fields as needed based on your API response
+  }
+  
+    const [leaderboardDate, setLeaderboardDate] = useState<LeaderboardEntry[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {

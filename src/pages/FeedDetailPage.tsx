@@ -1,5 +1,3 @@
-'use client';
-
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -16,6 +14,12 @@ import {
 import FullDate, { formatDate } from '@/utils/formatDate';
 import { NewComment } from '@/components/comment/NewComment';
 
+interface CommentType {
+  userID: string;
+  createdAt: string;
+  content: string;
+}
+
 interface FeedData {
   content: string;
   createdAt: string;
@@ -23,8 +27,9 @@ interface FeedData {
   imageUrl: string | null;
   updatedAt: string;
   userID: string;
-  Comment: [];
+  Comment: CommentType[];
 }
+
 
 export default function FeedDetailPage() {
   const [feedData, setFeedData] = useState<FeedData | null>(null);
@@ -167,7 +172,11 @@ export default function FeedDetailPage() {
               <div className='border-t border-gray-800 pt-4 text-sm text-gray-500'>
                 {FullDate(feedData.createdAt)}
               </div>
-              <NewComment />
+              <NewComment
+                isOpen={false}
+                onClose={() => {}}
+                feedID={feedData.feedID}
+              />
 
               {/* Action Buttons */}
               <div className='flex max-w-md items-center justify-between border-t border-gray-800 pt-4'>
