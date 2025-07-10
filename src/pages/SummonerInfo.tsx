@@ -59,25 +59,26 @@ const SummonerInfo = ({ region, summonerName, tag }: Props) => {
   }, [region, summonerName, tag]);
 
   if (error) {
-    return <p className="mt-6 text-center text-red-500">{error}</p>;
+    return <p className='mt-6 text-center text-red-500'>{error}</p>;
   }
 
   if (!data) {
-    return <p className="mt-6 text-center text-gray-500">불러오는 중...</p>;
+    return <p className='mt-6 text-center text-gray-500'>불러오는 중...</p>;
   }
 
   const { user, summonerName: name, tag: riotTag } = data;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 pt-12 pb-20">
-      <SummonerProfile summoner={user} summonerName={name} tag={riotTag} />
-
-      <div className="flex flex-col gap-8 lg:flex-row mt-8">
-        <div className="w-full lg:w-1/3 space-y-6">
-          <SummonerRankTier puuid={user.puuid} />
+    <div className='mx-auto max-w-5xl px-4'>
+      <SummonerProfile
+        summoner={user}
+        summonerName={name}
+        tag={riotTag}
+        puuid={user.puuid}
+      />
+      <div className='flex flex-col gap-8 lg:flex-row'>
+        <div className='w-full'>
           <SummonerChampMastery puuid={user.puuid} summonerName={name} />
-        </div>
-        <div className="w-full lg:w-2/3">
           <MatchList puuid={user.puuid} summonerName={name} />
         </div>
       </div>

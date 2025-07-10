@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 
 interface Team {
   id: number;
@@ -71,40 +72,47 @@ const EsportsTeams: React.FC = () => {
 
   if (loading)
     return (
-      <div className='flex h-80 items-center justify-center text-lg text-[#B6C2E2]'>
-        불러오는 중...
+      <div className='flex h-80 items-center justify-center'>
+        <div className='h-12 w-12 animate-spin rounded-full border-b-2 border-emerald-400'></div>
+        <span className='ml-4 text-lg text-slate-300'>불러오는 중...</span>
       </div>
     );
 
   return (
-    <div className='mx-auto w-full max-w-2xl'>
+    <div className='relative mx-auto min-h-[400px] w-full max-w-2xl overflow-hidden rounded-xl bg-[#10193A] p-4 shadow-lg'>
+      {/* 바깥쪽 배경 그라데이션 오버레이 */}
+      <div className='pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br from-emerald-600/10 via-amber-600/5 to-green-600/10'></div>
       {selectedTeam && (
-        <div className='rounded-xl bg-[#10193A] p-8 shadow-lg'>
-          {/* 메인 정보 + 드롭다운 한 줄 배치 */}
-          <div className='mb-8 flex flex-col gap-4 md:flex-row md:items-center md:gap-8'>
+        <div className='relative z-10 p-6 sm:p-8'>
+          {/* 메인 정보 + 드롭다운 */}
+          <div className='mb-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-8'>
             {/* 팀 이미지/이름 */}
-            <div className='flex min-w-0 flex-1 items-center gap-4'>
+            <div className='flex min-w-0 flex-1 items-center gap-6'>
               {selectedTeam.image_url && (
-                <img
-                  src={selectedTeam.image_url}
-                  alt={selectedTeam.name}
-                  className='h-24 w-24 rounded-lg border border-[#23232b] bg-white object-contain'
-                />
+                <div className='relative flex-shrink-0'>
+                  <div className='absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-500 to-amber-500 opacity-75 blur'></div>
+                  <img
+                    src={selectedTeam.image_url || '/placeholder.svg'}
+                    alt={selectedTeam.name}
+                    className='relative h-32 w-32 rounded-2xl bg-slate-800/50 object-contain backdrop-blur-sm'
+                  />
+                </div>
               )}
-              <div className='min-w-0'>
-                <h2 className='truncate text-3xl font-extrabold text-white'>
+              <div className='min-w-0 flex-1'>
+                <h2 className='bg-gradient-to-r from-white via-slate-200 to-slate-300 bg-clip-text text-2xl font-bold break-words text-transparent sm:text-3xl'>
                   {selectedTeam.name}
                 </h2>
-                <div className='text-xl font-semibold text-[#6ee7b7]'>
+                <div className='bg-gradient-to-r from-emerald-400 to-amber-400 bg-clip-text text-lg font-semibold text-transparent sm:text-xl'>
                   {selectedTeam.acronym}
                 </div>
               </div>
             </div>
+
             {/* 드롭다운 */}
-            <div className='flex flex-col gap-2 md:flex-row md:items-center md:gap-2'>
+            <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3 lg:flex-shrink-0'>
               <select
                 id='league-select'
-                className='rounded border border-[#23232b] bg-[#18181c] px-3 py-2 text-[#B6C2E2] focus:outline-none'
+                className='rounded-xl border border-slate-600/50 bg-slate-800/50 px-4 py-3 text-slate-200 backdrop-blur-sm transition-all duration-200 focus:border-emerald-400/50 focus:ring-emerald-400/50 focus:outline-none'
                 value={league}
                 onChange={(e) => {
                   const selected = LEAGUE_OPTIONS.find(
@@ -115,80 +123,126 @@ const EsportsTeams: React.FC = () => {
                 }}
               >
                 {LEAGUE_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
+                  <option
+                    key={opt.value}
+                    value={opt.value}
+                    className='bg-slate-800'
+                  >
                     {opt.label}
                   </option>
                 ))}
               </select>
               <select
                 id='team-select'
-                className='min-w-[100px] rounded border border-[#23232b] bg-[#18181c] px-3 py-2 text-[#B6C2E2] focus:outline-none'
+                className='min-w-[120px] rounded-xl border border-slate-600/50 bg-slate-800/50 px-4 py-3 text-slate-200 backdrop-blur-sm transition-all duration-200 focus:border-emerald-400/50 focus:ring-emerald-400/50 focus:outline-none'
                 value={selectedTeamId ?? ''}
                 onChange={(e) => setSelectedTeamId(e.target.value)}
               >
                 {teams.map((team) => (
-                  <option key={team.id} value={team.id}>
+                  <option
+                    key={team.id}
+                    value={team.id}
+                    className='bg-slate-800'
+                  >
                     {team.acronym || team.name}
                   </option>
                 ))}
               </select>
             </div>
           </div>
+
           {/* 로스터 */}
-          <h3 className='mb-4 border-b border-[#23232b] pb-2 text-2xl font-bold text-[#B6C2E2]'>
-            ROSTER
-          </h3>
-          <ul className='flex flex-col gap-4'>
-            {selectedTeam.players && selectedTeam.players.length > 0 ? (
-              [...selectedTeam.players]
-                .sort((a, b) => {
-                  const order = [
-                    'top',
-                    'jun',
-                    'jungle',
-                    'mid',
-                    'adc',
-                    'bot',
-                    'sup',
-                    'support',
-                  ];
-                  const aIdx = order.indexOf(a.role.toLowerCase());
-                  const bIdx = order.indexOf(b.role.toLowerCase());
-                  if (aIdx === -1 && bIdx === -1) return 0;
-                  if (aIdx === -1) return 1;
-                  if (bIdx === -1) return -1;
-                  return aIdx - bIdx;
-                })
-                .map((player) => (
-                  <li
-                    key={player.id}
-                    className='flex items-center gap-5 rounded bg-[#18181c] px-5 py-4 transition hover:bg-[#23232b]'
-                  >
-                    {/* 선수 이미지가 없으면 빈 원형 출력 */}
-                    {player.image_url ? (
-                      <img
-                        src={player.image_url}
-                        alt={player.name}
-                        className='h-14 w-14 rounded-full border border-[#23232b] bg-[#10193A] object-cover'
-                      />
-                    ) : (
-                      <div className='h-14 w-14 rounded-full border border-[#23232b] bg-[#10193A]' />
-                    )}
-                    <span className='w-36 text-lg font-bold text-white'>
-                      {player.name}
-                    </span>
-                    <span className='w-16 text-base font-semibold text-[#6ee7b7]'>
-                      {ROLE_KR[player.role.toLowerCase()] || player.role}
-                    </span>
-                    <span className='text-base font-medium text-[#B6C2E2]'>
-                      {player.first_name} {player.last_name}
-                    </span>
-                  </li>
-                ))
-            ) : (
-              <li className='text-[#b6c2e2]'>로스터 정보가 없습니다.</li>
+          <div className='relative'>
+            <h3 className='mb-6 flex items-center gap-3 text-2xl font-bold text-slate-200'>
+              <div className='h-8 w-1 rounded-full bg-gradient-to-b from-emerald-500 to-amber-500'></div>
+              ROSTER
+            </h3>
+
+            {selectedTeam.image_url && (
+              <div
+                className='pointer-events-none absolute top-4 right-8 h-80 w-80 opacity-8'
+                style={{
+                  backgroundImage: `url(${selectedTeam.image_url})`,
+                  backgroundSize: 'contain',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'center',
+                  filter: 'grayscale(100%)',
+                }}
+              ></div>
             )}
-          </ul>
+
+            <ul className='relative z-10 flex flex-col gap-3'>
+              {selectedTeam.players && selectedTeam.players.length > 0 ? (
+                [...selectedTeam.players]
+                  .sort((a, b) => {
+                    const order = [
+                      'top',
+                      'jun',
+                      'jungle',
+                      'mid',
+                      'adc',
+                      'bot',
+                      'sup',
+                      'support',
+                    ];
+                    const aIdx = order.indexOf(a.role.toLowerCase());
+                    const bIdx = order.indexOf(b.role.toLowerCase());
+                    if (aIdx === -1 && bIdx === -1) return 0;
+                    if (aIdx === -1) return 1;
+                    if (bIdx === -1) return -1;
+                    return aIdx - bIdx;
+                  })
+                  .map((player, index) => (
+                    <li
+                      key={player.id}
+                      className='group flex items-center gap-5 rounded-2xl border-slate-700/30 bg-slate-800/30 px-6 py-5 backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:border-slate-600/50 hover:bg-slate-700/40 hover:shadow-emerald-500/10'
+                      style={{
+                        animationDelay: `${index * 100}ms`,
+                      }}
+                    >
+                      {/* 선수 이미지 */}
+                      <div className='relative flex-shrink-0'>
+                        {player.image_url ? (
+                          <>
+                            <div className='absolute inset-0 rounded-full bg-gradient-to-r from-emerald-400/20 to-amber-500/20 blur transition-all duration-300 group-hover:blur-md'></div>
+                            <img
+                              src={player.image_url || '/placeholder.svg'}
+                              alt={player.name}
+                              className='relative h-20 w-20 rounded-full border-slate-600/50 bg-slate-800/50 object-cover transition-all duration-300 group-hover:border-emerald-400/50'
+                            />
+                          </>
+                        ) : (
+                          <div className='flex h-20 w-20 items-center justify-center rounded-full border-slate-600/50 bg-gradient-to-br from-slate-700/50 to-slate-800/50'>
+                            <div className='h-10 w-10 rounded-full bg-slate-600/30'></div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className='flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6'>
+                        <div className='flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-6'>
+                          <div className='flex w-full min-w-0 flex-row items-center justify-between gap-4'>
+                            <span className='truncate text-lg font-bold text-white transition-colors duration-300 group-hover:text-emerald-300'>
+                              {player.name}
+                            </span>
+                            <span className='w-16 flex-shrink-0 border border-emerald-500/30 bg-gradient-to-r from-emerald-500/20 to-amber-500/20 px-3 py-1 text-center text-sm font-semibold text-emerald-300'>
+                              {ROLE_KR[player.role.toLowerCase()] ||
+                                player.role}
+                            </span>
+                          </div>
+                        </div>
+                        <span className='text-sm font-medium text-slate-400 transition-colors duration-300 group-hover:text-slate-300 sm:text-base'>
+                          {player.first_name} {player.last_name}
+                        </span>
+                      </div>
+                    </li>
+                  ))
+              ) : (
+                <li className='rounded-2xl border border-slate-700/30 bg-slate-800/20 py-8 text-center text-slate-400'>
+                  로스터 정보가 없습니다.
+                </li>
+              )}
+            </ul>
+          </div>
         </div>
       )}
     </div>

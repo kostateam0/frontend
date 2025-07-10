@@ -1,13 +1,15 @@
-import { motion } from "framer-motion";
-import { fadeIn, staggerContainer, staggerItem } from "@/lib/framer-animations";
+import { motion } from 'framer-motion';
+import { fadeIn, staggerContainer, staggerItem } from '@/lib/framer-animations';
 
-import { Separator } from "@/components/ui/separator";
+import { Separator } from '@/components/ui/separator';
+import SummonerRankTier from '@/components/SummonerRankTier';
 
 interface User {
   name: string;
   profileIconId: number;
   summonerLevel: number;
   revisionDate: number;
+  puuid?: string;
 }
 
 interface SummonerProfileProps {
@@ -31,56 +33,46 @@ const SummonerProfile = ({
     >
       <div className='glass-card overflow-hidden rounded-xl'>
         <div className='p-6 sm:p-8'>
-          <div className='flex flex-col items-center gap-6 sm:flex-row sm:items-start'>
-            <motion.div variants={fadeIn} className='relative'>
-              <div className='h-24 w-24 overflow-hidden rounded-xl border-2 border-white/20 sm:h-32 sm:w-32'>
+          <div className='flex flex-col gap-8 sm:flex-row sm:items-center sm:gap-10'>
+            {/* 왼쪽: 프로필 이미지 */}
+            <motion.div
+              variants={fadeIn}
+              className='relative mx-auto flex-shrink-0 sm:mx-0'
+            >
+              <div className='h-32 w-32 overflow-hidden rounded-2xl border-2 border-white/20 bg-slate-900/40 sm:h-40 sm:w-40'>
                 <img
                   src={`https://ddragon.leagueoflegends.com/cdn/15.11.1/img/profileicon/${summoner.profileIconId}.png`}
                   alt={`${summoner.name}'s profile`}
                   className='h-full w-full object-cover'
                 />
               </div>
-              <div className='bg-lol-blue/90 absolute -right-2 -bottom-2 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white/20 text-xs font-medium text-white'>
+              <div className='bg-lol-blue/90 absolute -right-4 -bottom-4 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/20 text-base font-bold text-white shadow-lg'>
                 {summoner.summonerLevel}
               </div>
             </motion.div>
 
-            <div className='flex-1 text-center sm:text-left'>
-              <motion.span
-                variants={staggerItem}
-                className='text-lol-blue bg-lol-blue/10 mb-2 inline-block rounded-full px-3 py-1 text-xs font-medium'
-              >
-                {summonerName}#{tag}
-              </motion.span>
-
-              <motion.h1
-                variants={staggerItem}
-                className='mb-2 text-3xl font-bold sm:text-4xl'
-              >
-                {summonerName}#{tag}
-              </motion.h1>
-
-              <Separator className="my-4" />
-
-              <motion.div
-                variants={staggerItem}
-                className='flex flex-wrap justify-center gap-4 sm:justify-start'
-              >
-                <div className='text-center'>
-                  <p className='text-xl font-medium'>--</p>
-                  <p className='text-muted-foreground text-xs'>Win Rate</p>
+            {/* 오른쪽: 닉네임/태그/랭크 */}
+            <div className='flex flex-1 flex-col justify-start'>
+              <div className='flex flex-col items-center sm:items-start'>
+                <motion.span
+                  variants={staggerItem}
+                  className='text-lol-blue bg-lol-blue/10 mb-2 inline-block rounded-full px-3 py-1 text-xs font-medium'
+                >
+                  {summonerName}#{tag}
+                </motion.span>
+                <motion.h1
+                  variants={staggerItem}
+                  className='mb-2 text-3xl font-bold sm:text-4xl'
+                >
+                  {summonerName}#{tag}
+                </motion.h1>
+              </div>
+              <Separator className='my-4' />
+              {summoner.puuid && (
+                <div className='flex w-full flex-row justify-center gap-8 sm:justify-start'>
+                  <SummonerRankTier puuid={summoner.puuid} />
                 </div>
-
-                <div className='text-center'>
-                  <p className='text-xl font-medium'>--</p>
-                  <p className='text-muted-foreground text-xs'>Rank</p>
-                </div>
-
-                <div className='text-center'>
-                  <p className='text-xl font-medium'>--</p>
-                  <p className='text-muted-foreground text-xs'>LP</p>
-                </div>
-              </motion.div>
+              )}
             </div>
           </div>
         </div>

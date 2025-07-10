@@ -43,7 +43,7 @@ const EsportsRankings: React.FC = () => {
     );
 
   return (
-    <div className='mx-auto min-h-[400px] w-full max-w-4xl rounded-xl bg-[#10193A] p-4 shadow-lg'>
+    <div className='mx-auto min-h-[400px] w-full max-w-2xl rounded-xl bg-[#10193A] p-4 shadow-lg'>
       <h1 className='mb-4 text-2xl font-bold text-[#B6C2E2]'>
         2025 LCK Spring 순위표
       </h1>

@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { fadeIn, staggerContainer, staggerItem } from '@/lib/framer-animations';
 
 interface RankTierProps {
   puuid: string;
@@ -48,59 +46,44 @@ const SummonerRankTier = ({ puuid }: RankTierProps) => {
   // 솔로랭크 → 자유랭크 순서로 정렬
   const rankOrder = ['RANKED_SOLO_5x5', 'RANKED_FLEX_SR'];
   const sortedRanks = [...ranks].sort(
-    (a, b) => rankOrder.indexOf(a.queueType) - rankOrder.indexOf(b.queueType)
+    (a, b) => rankOrder.indexOf(a.queueType) - rankOrder.indexOf(b.queueType),
   );
 
   return (
-    <motion.div
-      variants={staggerContainer}
-      initial='hidden'
-      whileInView='visible'
-      viewport={{ once: true, margin: '-100px' }}
-      className='mt-12 w-full'
-    >
-      <motion.h2
-        variants={staggerItem}
-        className='text-1xl mb-8 text-center font-bold'
-      ></motion.h2>
-      <motion.div
-        variants={fadeIn}
-        className='glass-card mx-auto flex w-full max-w-2xl flex-row gap-6 rounded-lg p-6'
-      >
-        {sortedRanks.map((rank) => (
-          <div
-            key={rank.queueType}
-            className='flex flex-1 flex-col items-center justify-center text-center'
-          >
-            <img
-              src={`https://opgg-static.akamaized.net/images/medals/${rank.tier.toLowerCase()}.png`}
-              alt={rank.tier}
-              className='mb-2 h-14 w-14 object-contain sm:h-16 sm:w-16'
-              onError={(e) => {
-                (e.target as HTMLImageElement).src =
-                  'https://opgg-static.akamaized.net/images/medals/default.png';
-              }}
-            />
-            <h3 className='text-base font-semibold break-keep sm:text-lg'>
-              {queueTypeMap[rank.queueType] || rank.queueType}
-            </h3>
-            <p className='text-xs text-gray-500 sm:text-sm'>
-              {rank.tier} {rank.rank} ({rank.leaguePoints}LP)
-            </p>
-            <p className='text-xs text-gray-500 sm:text-sm'>
-              {rank.wins}승 {rank.losses}패
-            </p>
-            <p className='text-xs text-gray-500 sm:text-sm'>
-              승률:{' '}
-              {rank.wins + rank.losses > 0
-                ? ((rank.wins / (rank.wins + rank.losses)) * 100).toFixed(1)
-                : 0}
-              %
-            </p>
-          </div>
-        ))}
-      </motion.div>
-    </motion.div>
+    <div className='flex w-full flex-row justify-center gap-4 sm:justify-start'>
+      {sortedRanks.map((rank) => (
+        <div
+          key={rank.queueType}
+          className='flex w-32 flex-col items-center justify-center rounded-xl border border-slate-700 bg-slate-900/70 p-3 text-center shadow-sm'
+        >
+          <img
+            src={`https://opgg-static.akamaized.net/images/medals/${rank.tier.toLowerCase()}.png`}
+            alt={rank.tier}
+            className='mb-1 h-10 w-10 object-contain'
+            onError={(e) => {
+              (e.target as HTMLImageElement).src =
+                'https://opgg-static.akamaized.net/images/medals/default.png';
+            }}
+          />
+          <h3 className='mb-1 text-xs font-semibold break-keep text-slate-200'>
+            {queueTypeMap[rank.queueType] || rank.queueType}
+          </h3>
+          <p className='text-xs text-gray-400'>
+            {rank.tier} {rank.rank} ({rank.leaguePoints}LP)
+          </p>
+          <p className='text-xs text-gray-400'>
+            {rank.wins}승 {rank.losses}패
+          </p>
+          <p className='text-xs text-gray-400'>
+            승률:{' '}
+            {rank.wins + rank.losses > 0
+              ? ((rank.wins / (rank.wins + rank.losses)) * 100).toFixed(1)
+              : 0}
+            %
+          </p>
+        </div>
+      ))}
+    </div>
   );
 };
 

@@ -30,7 +30,7 @@ export default function MainLayout() {
             
           </div> */}
         </main>
-        <Toaster position='bottom-center'/>
+        <Toaster position='bottom-center' />
         <RightSidebar /> {/* ✅ 컴포넌트 삽입 */}
       </div>
 
