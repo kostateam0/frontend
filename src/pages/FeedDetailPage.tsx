@@ -28,8 +28,11 @@ interface FeedData {
   updatedAt: string;
   userID: string;
   Comment: CommentType[];
+  user: {
+    id: string;
+    name?: string | null;
+  };
 }
-
 
 export default function FeedDetailPage() {
   const [feedData, setFeedData] = useState<FeedData | null>(null);
@@ -129,13 +132,14 @@ export default function FeedDetailPage() {
                 <Avatar className='h-12 w-12'>
                   <AvatarImage src={`/placeholder.svg?height=48&width=48`} />
                   <AvatarFallback className='bg-gray-700 text-white'>
-                    {feedData.userID}
+                    {feedData.user?.name ? feedData.user.name : '닉네임 없음'}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <div className='flex items-center space-x-2'>
-                    <h3 className='font-bold text-white'>{feedData.userID}</h3>
-                    <span className='text-gray-500'>@{feedData.userID}</span>
+                    <h3 className='font-bold text-white'>
+                      {feedData.user?.name ? feedData.user.name : '닉네임 없음'}
+                    </h3>
                   </div>
                   <p className='text-sm text-gray-500'>
                     {formatDate(feedData.createdAt)}
@@ -159,12 +163,15 @@ export default function FeedDetailPage() {
               </p>
 
               {feedData.imageUrl && (
-                <div className='overflow-hidden rounded-2xl border border-gray-800'>
-                  <img
-                    src={feedData.imageUrl || '/placeholder.svg'}
-                    alt='게시물 이미지'
-                    className='h-auto w-full'
-                  />
+                <div className='flex space-x-2 overflow-x-auto rounded-2xl border border-gray-800 p-2'>
+                  {feedData.imageUrl.split(',').map((url, idx) => (
+                    <img
+                      key={idx}
+                      src={url.trim()}
+                      alt={`게시물 이미지 ${idx + 1}`}
+                      className='h-auto w-48 rounded-lg object-cover'
+                    />
+                  ))}
                 </div>
               )}
 

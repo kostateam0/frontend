@@ -19,4 +19,8 @@ export type Feed = {
   };
   Comment: Comment[];
   imageUrl?: string | null;
+  user: {
+    id: string;
+    name: string;
+  };
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -10,14 +10,7 @@ import {
   DialogOverlay,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  ImageIcon,
-  MapPin,
-  Smile,
-  Users,
-  X,
-  Camera,
-} from 'lucide-react';
+import { ImageIcon, MapPin, Smile, Users, X, Camera } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -30,15 +23,21 @@ const createFeed = async (
   userID: string,
   content: string,
   privacy?: string,
-  images?: string[],
+  files?: File[],
 ) => {
+  const formData = new FormData();
+  formData.append('userID', userID);
+  formData.append('content', content);
+  formData.append('privacy', privacy || 'public');
+
+  files?.forEach((file) => {
+    formData.append(`images`, file); // 'images'는 서버에서 받을 필드명
+  });
+
   const response = await fetch('/api/feed', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     credentials: 'include',
-    body: JSON.stringify({ userID, content, privacy, images }),
+    body: formData,
   });
 
   if (!response.ok) {
@@ -50,18 +49,70 @@ const createFeed = async (
 
 export function NewFeed({ isOpen, onClose }: NewFeedModalProps) {
   const [content, setContent] = useState('');
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const imagePickerRef = useRef<HTMLInputElement | null>(null);
   const maxLength = 280;
   const queryClient = useQueryClient();
 
-  const handleImageUpload = () => {
-    const mockImage = '/placeholder.svg?height=200&width=200';
-    setSelectedImages([...selectedImages, mockImage]);
+  // const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [previewUrl, setPreviewUrl] = useState<string[]>([]);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const maxImages = 5;
+    const maxSizeMB = 5;
+    const validFiles: File[] = [];
+
+    const currentCount = selectedFiles.length;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const fileSizeMB = file.size / (1024 * 1024);
+
+      if (!file.type.startsWith('image/')) {
+        toast.error(`'${file.name}'은 이미지 파일이 아닙니다.`);
+        continue;
+      }
+
+      if (fileSizeMB > maxSizeMB) {
+        toast.error(`'${file.name}'은 ${maxSizeMB}MB를 초과합니다.`);
+        continue;
+      }
+
+      if (currentCount + validFiles.length >= maxImages) {
+        toast.warning(`이미지는 최대 ${maxImages}장까지 업로드할 수 있습니다.`);
+        break;
+      }
+
+      validFiles.push(file);
+    }
+
+    validFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    setSelectedFiles((prev) => [...prev, ...validFiles]);
+    e.target.value = '';
+  };
+
+  const handleImagePickerClick = () => {
+    if (imagePickerRef.current) {
+      imagePickerRef.current.click();
+    }
+    // const mockImage = '/placeholder.svg?height=200&width=200';
+    // setSelectedImages([...selectedImages, mockImage]);
   };
 
   const removeImage = (index: number) => {
-    setSelectedImages(selectedImages.filter((_, i) => i !== index));
+    setPreviewUrl(previewUrl.filter((_, i) => i !== index));
+    setSelectedFiles(selectedFiles.filter((_, i) => i !== index));
   };
 
   const handlePost = async () => {
@@ -72,10 +123,11 @@ export function NewFeed({ isOpen, onClose }: NewFeedModalProps) {
 
     setIsSubmitting(true);
     try {
-      await createFeed('TEST001', content, 'public', selectedImages);
+      await createFeed('TEST001', content, 'public', selectedFiles);
+
       toast.success('게시물이 작성되었습니다.');
       setContent('');
-      setSelectedImages([]);
+      setSelectedFiles([]);
       queryClient.invalidateQueries({ queryKey: ['feeds'] });
       onClose();
     } catch (error) {
@@ -91,7 +143,7 @@ export function NewFeed({ isOpen, onClose }: NewFeedModalProps) {
 
   const handleClose = () => {
     setContent('');
-    setSelectedImages([]);
+    setSelectedFiles([]);
     onClose();
   };
 
@@ -118,19 +170,19 @@ export function NewFeed({ isOpen, onClose }: NewFeedModalProps) {
           />
         </div>
 
-        {selectedImages.length > 0 && (
-          <div className='grid grid-cols-2 gap-2 mt-4'>
-            {selectedImages.map((image, index) => (
+        {selectedFiles.length > 0 && (
+          <div className='mt-4 grid grid-cols-2 gap-2'>
+            {previewUrl.map((url, index) => (
               <div key={index} className='group relative'>
                 <img
-                  src={image}
+                  src={url}
                   alt={`Upload ${index + 1}`}
                   className='h-32 w-full rounded-lg object-cover'
                 />
                 <Button
                   variant='destructive'
                   size='icon'
-                  className='absolute top-2 right-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100'
+                  className='absolute top-2 right-2 z-20 h-6 w-6 opacity-0 group-hover:opacity-100'
                   onClick={() => removeImage(index)}
                 >
                   <X className='h-3 w-3' />
@@ -140,39 +192,71 @@ export function NewFeed({ isOpen, onClose }: NewFeedModalProps) {
           </div>
         )}
 
-        <div className='flex items-center justify-between border-t pt-4 mt-4'>
+        <div className='mt-4 flex items-center justify-between border-t pt-4'>
           <div className='flex items-center space-x-1'>
+            <input
+              ref={imagePickerRef}
+              type='file'
+              accept='image/*'
+              className='hidden'
+              id='image-upload'
+              multiple
+              onChange={handleImageUpload}
+            />
+
             <Button
               variant='ghost'
               size='icon'
               className='h-9 w-9 text-blue-500 hover:bg-blue-50'
-              onClick={handleImageUpload}
+              onClick={handleImagePickerClick}
               disabled={isSubmitting}
             >
               <Camera className='h-4 w-4' />
             </Button>
-            <Button variant='ghost' size='icon' className='h-9 w-9 text-blue-500'>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='h-9 w-9 text-blue-500'
+            >
               <ImageIcon className='h-4 w-4' />
             </Button>
-            <Button variant='ghost' size='icon' className='h-9 w-9 text-blue-500'>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='h-9 w-9 text-blue-500'
+            >
               <Smile className='h-4 w-4' />
             </Button>
-            <Button variant='ghost' size='icon' className='h-9 w-9 text-blue-500'>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='h-9 w-9 text-blue-500'
+            >
               <MapPin className='h-4 w-4' />
             </Button>
-            <Button variant='ghost' size='icon' className='h-9 w-9 text-blue-500'>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='h-9 w-9 text-blue-500'
+            >
               <Users className='h-4 w-4' />
             </Button>
           </div>
         </div>
 
         <DialogFooter className='pt-4'>
-          <Button variant='outline' onClick={handleClose} disabled={isSubmitting}>
+          <Button
+            variant='outline'
+            onClick={handleClose}
+            disabled={isSubmitting}
+          >
             취소
           </Button>
           <Button
             onClick={handlePost}
-            disabled={!content.trim() || content.length > maxLength || isSubmitting}
+            disabled={
+              !content.trim() || content.length > maxLength || isSubmitting
+            }
             className='bg-blue-500 text-white hover:bg-blue-600'
           >
             {isSubmitting ? '게시 중...' : '게시하기'}

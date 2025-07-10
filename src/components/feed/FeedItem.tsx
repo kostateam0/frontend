@@ -11,12 +11,18 @@ import { formatDate } from '@/utils/formatDate';
 import { useState } from 'react';
 import { NewCommentModal } from '../comment/NewCommentModal';
 import { useUserStore } from '@/store/userStore';
-import type { Feed } from '@/types/feed'
+import type { Feed } from '@/types/feed';
 type onDelete = (id: string) => void;
 
-export default function FeedItem({ feed, onDelete }: { feed: Feed; onDelete?: onDelete }) {
+export default function FeedItem({
+  feed,
+  onDelete,
+}: {
+  feed: Feed;
+  onDelete?: onDelete;
+}) {
   const { user, isLoggedIn } = useUserStore();
-  const isOwner = (user as any)?.id === feed.userID;
+  const isOwner = user?.id === feed.userID;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedFeedId, setSelectedFeedId] = useState('');
   const [isLiked, setIsLiked] = useState(feed.isLiked); // 초기값은 feed.isLiked로 설정
@@ -67,8 +73,24 @@ export default function FeedItem({ feed, onDelete }: { feed: Feed; onDelete?: on
       .catch((err) => console.error('삭제 실패:', err));
   };
 
-  const handleShare = () => {
-    console.log('게시글 공유');
+  const handleShare = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const shareData = {
+      title: '피드 공유',
+      text: feed.content,
+      url: `$${window.location.origin}/feed/${feed.feedID}`,
+    };
+
+    if (navigator.share) {
+      navigator
+        .share(shareData)
+        .then(() => console.log('공유 성공'))
+        .catch((err) => console.error('공유 실패:', err));
+    } else {
+      console.warn('Web Share API를 지원하지 않습니다.');
+      // 대체 공유 방법을 구현할 수 있습니다.
+    }
   };
 
   const handleBookmark = () => {
@@ -107,7 +129,7 @@ export default function FeedItem({ feed, onDelete }: { feed: Feed; onDelete?: on
               <div className='font-semibold text-gray-900 dark:text-gray-100'>
                 <div className='flex items-center justify-center space-x-2'>
                   <span className='font-bold text-[#8B6914]'>
-                    {feed.userID}
+                    {feed.user?.name ? feed.user.name : '닉네임 없음'}
                   </span>
                   <span className='ml-1 rounded bg-yellow-600 px-2 py-0.5 text-xs font-semibold text-black'>
                     정보없음
@@ -136,6 +158,20 @@ export default function FeedItem({ feed, onDelete }: { feed: Feed; onDelete?: on
             {feed.content}
           </p>
         </CardContent>
+
+        {/* imageArea */}
+        {feed.imageUrl && (
+          <div className='flex space-x-2 overflow-x-auto rounded-2xl border border-gray-800 p-2'>
+            {feed.imageUrl.split(',').map((url, idx) => (
+              <img
+                key={idx}
+                src={url.trim()}
+                alt={`게시물 이미지 ${idx + 1}`}
+                className='h-auto w-48 rounded-lg object-cover'
+              />
+            ))}
+          </div>
+        )}
         {/* </Link> */}
         <CardFooter className='flex items-center space-x-4 text-gray-500 dark:text-gray-400'>
           <div className='flex items-center space-x-4 text-gray-500 dark:text-gray-400'>
@@ -194,7 +230,12 @@ export default function FeedItem({ feed, onDelete }: { feed: Feed; onDelete?: on
               </button>
             )}
 
-            <button className='flex items-center space-x-1 transition-colors hover:text-green-500'>
+            <button
+              className='flex items-center space-x-1 transition-colors hover:text-green-500'
+              onClick={(e) => {
+                handleShare();
+              }}
+            >
               <Share className='h-4 w-4' />
               <span>공유</span>
             </button>
