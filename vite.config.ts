@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 
 export default defineConfig({
+  base: './', // ✅ 이 줄만 추가하면 Electron에서 경로 깨짐 해결됨!
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
@@ -17,7 +18,6 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '/api'),
       },
-      
     },
   },
 });
