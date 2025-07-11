@@ -16,6 +16,7 @@ interface SummonerProfileProps {
   summoner: User;
   summonerName: string;
   tag: string;
+  puuid: string;
 }
 
 const SummonerProfile = ({

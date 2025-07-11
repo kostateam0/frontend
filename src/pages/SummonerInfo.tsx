@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import SummonerProfile from '../components/SummonerProfile';
 import MatchList from '../components/MatchListPage';
 import SummonerChampMastery from '../components/SummonerChampMastery';
-import SummonerRankTier from '@/components/SummonerRankTier';
+// import SummonerRankTier from '@/components/SummonerRankTier';
 
 interface Props {
   region: string;

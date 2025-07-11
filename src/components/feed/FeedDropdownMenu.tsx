@@ -9,7 +9,7 @@ import {
   MoreHorizontal,
   Edit3,
   Trash2,
-  Share2,
+  // Share2,
   Bookmark,
   Link2,
   Flag,
@@ -20,7 +20,7 @@ interface PostDropdownMenuProps {
   isOwner?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
-  onShare: (e: React.MouseEvent<HTMLDivElement>) => void;
+  // onShare: (e: React.MouseEvent<HTMLDivElement>) => void;
   onBookmark?: () => void;
   onCopyLink?: () => void;
   onReport?: () => void;
@@ -31,7 +31,7 @@ export default function FeedDropdownMenu({
   isOwner = false,
   onEdit,
   onDelete,
-  onShare,
+  // onShare,
   onBookmark,
   onCopyLink,
   onReport,
@@ -67,13 +67,13 @@ export default function FeedDropdownMenu({
           </>
         )}
 
-        <DropdownMenuItem
+        {/* <DropdownMenuItem
           onClick={onShare}
           className='flex cursor-pointer items-center gap-2 px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 dark:text-stone-300 dark:hover:bg-stone-800'
         >
           <Share2 className='h-4 w-4' />
           공유하기
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
 
         <DropdownMenuItem
           onClick={onBookmark}

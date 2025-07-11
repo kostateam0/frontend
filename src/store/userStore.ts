@@ -1,16 +1,16 @@
 import { create } from "zustand";
 
-interface Feed {
-  content: string;
-  createdAt: string;
-}
+// interface Feed {
+//   content: string;
+//   createdAt: string;
+// }
 
-interface Bet {
-  matchId: number;
-  team: string;
-  amount: number;
-  createdAt: string;
-}
+// interface Bet {
+//   matchId: number;
+//   team: string;
+//   amount: number;
+//   createdAt: string;
+// }
 
 interface User {
   id: string;
