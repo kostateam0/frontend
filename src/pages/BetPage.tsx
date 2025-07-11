@@ -1,15 +1,19 @@
 import { useState } from "react";
 import { useUpcomingMatches } from "@/hooks/useUpcomingMatches";
 import { usePastMatches } from "@/hooks/usePastMatches";
+import { useRunningMatches } from "@/hooks/useRunningMatches";
 import BetBox from "@/components/BetBox";
 
 type View = "upcoming" | "past" | "ongoing";
 
 const BetPage = () => {
   const [view, setView] = useState<View>("upcoming");
+  
 
   const { matches: upcomingMatches, loading: loadingUpcoming } = useUpcomingMatches();
   const { matches: pastMatches, loading: loadingPast } = usePastMatches();
+  const { matches: runningMatches, loading: loadingRunning } = useRunningMatches(); 
+
 
   const now = Date.now();
 
@@ -37,8 +41,8 @@ const BetPage = () => {
     displayedMatches = pastMatches;
     isLoading = loadingPast;
   } else {
-    displayedMatches = filteredOngoing;
-    isLoading = loadingUpcoming;
+    displayedMatches = runningMatches;
+    isLoading = loadingRunning;
   }
 
   return (
