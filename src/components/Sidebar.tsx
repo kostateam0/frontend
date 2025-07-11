@@ -47,7 +47,7 @@ export default function Sidebar() {
           ))}
         </nav>
         <NewFeedButton />
-        <div className='mt-4'>
+        {/* <div className='mt-4'>
           {user ? (
             <LoginButton
               isLoggedIn
@@ -58,9 +58,9 @@ export default function Sidebar() {
           ) : (
             <LoginButton isLoggedIn={false} />
           )}
-        </div>
+        </div> */}
 
-        <div className='mt-auto text-center text-xs text-[#4A6741]/70'>
+        <div className='mt-auto text-center text-xs text-[#4A6741]/70 py-2'>
           © DarkTroll
         </div>
       </div>

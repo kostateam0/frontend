@@ -60,7 +60,9 @@ export function NewComment({ initialContent = '' }: CommentDialogProps) {
     }
   };
 
-  const handleClose = () => {
+  const handleClose = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     setContent(initialContent);
   };
 

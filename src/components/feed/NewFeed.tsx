@@ -143,6 +143,7 @@ export function NewFeed({ isOpen, onClose }: NewFeedModalProps) {
 
   const handleClose = () => {
     setContent('');
+    setPreviewUrl([]);
     setSelectedFiles([]);
     onClose();
   };
