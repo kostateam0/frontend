@@ -21,9 +21,9 @@ export default function MainLayout() {
       <div className='flex w-full flex-1 justify-center overflow-hidden'>
         <div className='flex w-full max-w-7xl'>
           {/* 좌측 사이드바 */}
-          <div className='hidden w-[250px] lg:block'>
+          {/* <div className='hidden w-[250px] lg:block'> */}
             <Sidebar />
-          </div>
+          {/* </div> */}
 
           {/* 중앙 피드 */}
           <main
@@ -38,9 +38,9 @@ export default function MainLayout() {
           </main>
 
           {/* 우측 사이드바 */}
-          <div className='hidden w-[280px] lg:block'>
+          {/* <div className='hidden w-[280px] lg:block'> */}
             <RightSidebar />
-          </div>
+          {/* </div> */}
         </div>
       </div>
 

@@ -36,40 +36,37 @@ export default function Sidebar() {
             Dark Troll Tracker
           </div>
 
-          {/* 메뉴 */}
-          <nav className='space-y-2'>
-            {menu.map(({ icon: Icon, label, path }) => (
-              <button
-                key={path}
-                onClick={() => nav(path)}
-                className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-gray-800/50 ${
-                  loc.pathname === path ? 'bg-gray-800/50' : ''
-                }`}
-                style={{ color: '#B0B0B0' }}
-              >
-                <Icon className='h-5 w-5 text-[#4A6741]' />
-                {label}
-              </button>
-            ))}
-          </nav>
-        </div>
+        <nav className='flex-1 space-y-2'>
+          {menu.map(({ icon: Icon, label, path }) => (
+            <button
+              key={path}
+              onClick={() => nav(path)}
+              className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm hover:bg-gray-800/50 ${
+                loc.pathname === path ? 'bg-gray-800/50' : ''
+              }`}
+              style={{ color: '#B0B0B0' }}
+            >
+              <Icon className='h-5 w-5 text-[#4A6741]' />
+              {label}
+            </button>
+          ))}
+        </nav>
+        <NewFeedButton />
+        {/* <div className='mt-4'>
+          {user ? (
+            <LoginButton
+              isLoggedIn
+              nickname='MoneyMonkey'
+              handle='MoneyMonkeycC8'
+              avatarUrl='/monkey-avatar.png'
+            />
+          ) : (
+            <LoginButton isLoggedIn={false} />
+          )}
+        </div> */}
 
-        {/* 하단: 버튼 + 로그인 + 카피 */}
-        <div className='flex flex-col gap-y-4'>
-          <NewFeedButton />
-          <div>
-            {user ? (
-              <LoginButton
-                isLoggedIn
-                nickname='MoneyMonkey'
-                handle='MoneyMonkeycC8'
-                avatarUrl='/monkey-avatar.png'
-              />
-            ) : (
-              <LoginButton isLoggedIn={false} />
-            )}
-          </div>
-          <div className='text-center text-xs text-[#4A6741]/70'>© DarkTroll</div>
+        <div className='mt-auto text-center text-xs text-[#4A6741]/70 py-2'>
+          © DarkTroll
         </div>
       </div>
     </aside>

@@ -89,7 +89,6 @@ export default function FeedItem({
         .catch((err) => console.error('공유 실패:', err));
     } else {
       console.warn('Web Share API를 지원하지 않습니다.');
-      // 대체 공유 방법을 구현할 수 있습니다.
     }
   };
 
@@ -191,7 +190,7 @@ export default function FeedItem({
             {isLoggedIn && (
               <button
                 onClick={handleLikeClick}
-                className={`flex items-center space-x-1 transition-colors ${
+                className={`flex items-center space-x-1 transition-colors hover:cursor-pointer ${
                   isLiked ? 'text-red-500' : 'hover:text-red-500'
                 }`}
               >
@@ -206,7 +205,7 @@ export default function FeedItem({
                   e.preventDefault();
                   e.stopPropagation();
                 }}
-                className='flex items-center space-x-1 transition-colors hover:text-blue-500'
+                className='flex items-center space-x-1 transition-colors hover:text-blue-500 hover:cursor-pointer'
               >
                 <MessageCircle className='h-4 w-4' />
                 <span>
@@ -221,7 +220,7 @@ export default function FeedItem({
                   e.stopPropagation();
                   handleCommentClick(feed.feedID);
                 }}
-                className='flex items-center space-x-1 transition-colors hover:text-blue-500'
+                className='flex items-center space-x-1 transition-colors hover:text-blue-500 hover:cursor-pointer'
               >
                 <MessageCircle className='h-4 w-4' />
                 <span>
@@ -231,10 +230,8 @@ export default function FeedItem({
             )}
 
             <button
-              className='flex items-center space-x-1 transition-colors hover:text-green-500'
-              onClick={(e) => {
-                handleShare();
-              }}
+              className='flex items-center space-x-1 transition-colors hover:text-green-500 hover:cursor-pointer'
+              onClick={handleShare}
             >
               <Share className='h-4 w-4' />
               <span>공유</span>

@@ -108,8 +108,13 @@ export function NewCommentModal({
         </div>
         <DialogFooter>
           <Button
+            className='hover:cursor-pointer'
             variant='outline'
-            onClick={() => handleClose(false)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleClose(false);
+            }}
             disabled={isSubmitting}
           >
             취소
