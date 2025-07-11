@@ -1,4 +1,3 @@
-import React from 'react';
 
 interface Props {
   summonerName: string;
@@ -46,7 +45,7 @@ const MatchParticipantCard = ({
   deaths,
   assists,
   totalDamageDealtToChampions,
-  teamPosition,
+  // teamPosition,
   win,
   itemIds,
   summonerLevel,
@@ -55,7 +54,7 @@ const MatchParticipantCard = ({
   spell1Id,
   spell2Id,
   isMe,
-  opponentName,
+  // opponentName,
 }: Props) => {
   const csPerMin = (cs / (timePlayed / 60)).toFixed(1);
   const kda = deaths === 0 ? 'Perfect' : ((kills + assists) / deaths).toFixed(2);

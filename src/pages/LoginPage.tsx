@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
@@ -19,7 +21,7 @@ const LoginPage = () => {
       const text = await res.text();
       if (!res.ok) throw new Error(`로그인 실패: ${text}`);
 
-      window.location.href = "/mypage";
+      navigate("/mypage"); // ✅ Electron에서도 안전하게 작동
     } catch (err) {
       setError("로그인 실패: 이메일 또는 비밀번호를 확인해주세요.");
       console.error(err);
@@ -39,7 +41,7 @@ const LoginPage = () => {
       <div className="w-full max-w-4xl bg-white rounded-[30px] border-4 border-black flex flex-col md:flex-row overflow-hidden shadow-lg">
         {/* 좌측 이미지 영역 */}
         <div className="w-full md:w-1/2 p-6 bg-[#eee] border-r-4 border-black flex justify-center items-center">
-          <img src="/assets/troll.png" alt="Troll" className="w-60 h-auto" />
+          <img src="assets/troll.png" alt="Troll" className="w-60 h-auto" />
         </div>
 
         {/* 우측 폼 영역 */}
@@ -77,14 +79,14 @@ const LoginPage = () => {
               onClick={handleGoogleLogin}
               className="w-full flex items-center justify-center bg-white border-2 border-black rounded-full py-2 hover:bg-gray-100"
             >
-              <img src="/assets/google.svg" alt="Google" className="w-5 h-5 mr-2" />
+              <img src="assets/google.svg" alt="Google" className="w-5 h-5 mr-2" />
               Google로 로그인
             </button>
             <button
               onClick={handleNaverLogin}
               className="w-full flex items-center justify-center bg-[#03c75a] text-white border-2 border-black rounded-full py-2 hover:bg-[#02b24f]"
             >
-              <img src="/assets/naver.svg" alt="Naver" className="w-5 h-5 mr-2" />
+              <img src="assets/naver.svg" alt="Naver" className="w-5 h-5 mr-2" />
               Naver로 로그인
             </button>
           </div>

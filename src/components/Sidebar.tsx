@@ -1,19 +1,19 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Trophy, Home, Search, User, Coins, Medal } from 'lucide-react';
-import LoginButton from '@/components/LoginButton';
-import { useEffect, useState } from 'react';
+// import LoginButton from '@/components/LoginButton';
+// import { useEffect, useState } from 'react';
 import { NewFeedButton } from './feed/NewFeedButton';
 
 export default function Sidebar() {
   const nav = useNavigate();
   const loc = useLocation();
-  const [user, setUser] = useState<{ email: string } | null>(null);
+  // const [user, setUser] = useState<{ email: string } | null>(null);
 
-  useEffect(() => {
-    fetch('http://localhost:4000/auth/me', { credentials: 'include' })
-      .then(async (r) => (r.ok ? setUser(await r.json()) : setUser(null)))
-      .catch(() => setUser(null));
-  }, []);
+  // useEffect(() => {
+  //   fetch('http://localhost:4000/auth/me', { credentials: 'include' })
+  //     .then(async (r) => (r.ok ? setUser(await r.json()) : setUser(null)))
+  //     .catch(() => setUser(null));
+  // }, []);
 
   const menu = [
     { icon: Home, label: '홈', path: '/' },

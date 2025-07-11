@@ -144,7 +144,7 @@ export default function FeedItem({
             isOwner={isOwner}
             onEdit={handleEdit}
             onDelete={handleDelete}
-            onShare={handleShare}
+            // onShare={handleShare}
             onBookmark={handleBookmark}
             onCopyLink={handleCopyLink}
             onReport={handleReport}

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import MatchSummaryCard from './MatchSummaryCard';
 import MatchDetail from './MatchDetail';
 import { motion } from 'framer-motion';
-import { fadeIn, staggerContainer, staggerItem } from '@/lib/framer-animations';
+import { fadeIn, staggerContainer } from '@/lib/framer-animations';
 
 interface MatchListProps {
   puuid: string;

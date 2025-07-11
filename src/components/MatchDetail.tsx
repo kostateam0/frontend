@@ -1,4 +1,3 @@
-import React from 'react';
 import MatchParticipantCard from './MatchParticipantCard';
 import type { Participant } from '@/types/Participant';
 
@@ -38,7 +37,7 @@ const MatchDetail = ({ data }: MatchDetailProps) => {
     return map;
   };
 
-  const myMap = createTeamMap(myTeam);
+  // const myMap = createTeamMap(myTeam);
   const enemyMap = createTeamMap(enemyTeam);
 
   const getOpponent = (teamPosition: string): string | undefined => {

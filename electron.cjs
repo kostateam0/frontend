@@ -5,12 +5,17 @@ function createWindow() {
   console.log("🟢 [Electron] createWindow called");
 
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+  const isDev = !app.isPackaged;
 
   const win = new BrowserWindow({
     width,
     height,
     webPreferences: {
       contextIsolation: true,
+      nodeIntegration: false,
+      webSecurity: false, // ✅ allow cookies for localhost
+      sandbox: false,
+      partition: 'persist:troll-session', // ✅ 세션 지속 이름 설정
     },
   });
 
@@ -20,7 +25,7 @@ function createWindow() {
   win.loadFile(htmlPath)
     .then(() => {
       console.log("✅ [Electron] index.html loaded successfully");
-      win.webContents.openDevTools();
+      win.webContents.openDevTools(); // 🔍 DevTools 자동 실행
     })
     .catch((err) => {
       console.error("❌ [Electron] Failed to load index.html:", err);
