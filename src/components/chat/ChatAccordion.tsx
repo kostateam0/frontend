@@ -64,7 +64,7 @@ export function ChatAccordion() {
     <Accordion
       type='single'
       collapsible
-      className='h-3/5'
+      className='h-4/7 pb-8'
       defaultValue='item-1'
     >
       <AccordionItem value='item-1' className='h-full'>
