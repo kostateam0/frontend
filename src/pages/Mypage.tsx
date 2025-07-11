@@ -1,25 +1,12 @@
 import { useEffect, useState } from "react";
 import { useUserStore } from "@/store/userStore";
 import {
-  Heart,
-  MessageCircle,
-  Repeat2,
-  Share,
-  Trophy,
-  TrendingUp,
-  User,
-  Mail,
-  Coins,
-  LogOut,
-  UserX,
-  Edit3,
-  Check,
-  X,
-  ChevronLeft,
-  Home,
-  Search,
-  Bell,
+  Heart, MessageCircle, Repeat2, Share, Trophy,
+  TrendingUp, User, Mail, Coins, LogOut, UserX,
+  Edit3, Check, X, ChevronLeft
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { safeNavigate } from "@/utils/safeNavigate";
 
 const TABS = ["dashboard", "feeds", "bets"] as const;
 type Tab = typeof TABS[number];
@@ -28,28 +15,20 @@ interface Feed {
   content: string;
   createdAt: string;
 }
-
 interface Bet {
   matchId: number;
   team: string;
   amount: number;
   createdAt: string;
 }
-
 interface StatCardProps {
   icon: React.ElementType;
   label: string;
   value: string | number;
   color: string;
 }
-
-interface FeedCardProps {
-  feed: Feed;
-}
-
-interface BetCardProps {
-  bet: Bet;
-}
+interface FeedCardProps { feed: Feed; }
+interface BetCardProps { bet: Bet; }
 
 const Mypage = () => {
   const { user, isLoggedIn, accessToken, setUser, logout } = useUserStore();
@@ -57,6 +36,7 @@ const Mypage = () => {
   const [editedName, setEditedName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("dashboard");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -71,7 +51,7 @@ const Mypage = () => {
         setUser(profile, accessToken ?? "");
       } catch {
         logout();
-        window.location.href = "/login";
+        safeNavigate(navigate, "/login");
       } finally {
         setIsLoading(false);
       }
@@ -89,7 +69,7 @@ const Mypage = () => {
       if (!res.ok) throw new Error("탈퇴 실패");
       alert("회원 탈퇴가 완료되었습니다.");
       logout();
-      window.location.href = "/login";
+      safeNavigate(navigate, "/login");
     } catch {
       alert("오류가 발생했습니다.");
     }
@@ -102,7 +82,7 @@ const Mypage = () => {
         credentials: "include",
       });
       logout();
-      window.location.href = "/login";
+      safeNavigate(navigate, "/login");
     } catch {
       alert("로그아웃 중 오류가 발생했습니다.");
     }
@@ -145,7 +125,7 @@ const Mypage = () => {
           </div>
         </div>
 
-        {/* Profile Card */}
+        {/* Profile */}
         <div className="bg-[#1c1c1e] rounded-xl p-6 mb-6 shadow-lg text-white">
           <div className="flex items-center gap-4">
             <img src="/assets/troll.png" className="w-20 h-20 rounded-full border-2 border-yellow-500" />
@@ -185,7 +165,7 @@ const Mypage = () => {
           ))}
         </div>
 
-        {/* Content */}
+        {/* Tab Content */}
         <div className="bg-[#1c1c1e] rounded-b-md p-6 text-white">
           {tab === "dashboard" && (
             <div className="grid grid-cols-2 gap-4">

@@ -11,7 +11,6 @@ const RightSidebar = () => {
   if (loading) return <div>로딩 중...</div>;
   if (matches.length === 0) return <div>경기 없음</div>;
 
-  /* 👉 만약 API가 정렬을 보장하지 않으면 직접 정렬 */
   const sorted = [...matches].sort(
     (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime(),
   );
@@ -27,7 +26,7 @@ const RightSidebar = () => {
       className='hidden w-80 border-l p-4 xl:block'
       style={{ backgroundColor: '#111111', borderColor: '#2A2A2A' }}
     >
-      <div className='mb-4 text-lg font-bold text-[#8B6914]'>
+      <div className='mt-10 mb-4 text-lg font-bold text-[#8B6914]'>
         eSports 경기 정보
       </div>
 
@@ -40,10 +39,8 @@ const RightSidebar = () => {
         </div>
       </ScrollArea>
 
-      {/* 필요하면 아래쪽에 채팅 아코디언 등 추가 UI 배치 */}
-      {/* <div className="mt-6"> */}
+      {/* 채팅 섹션 */}
       <ChatAccordion />
-      {/* </div> */}
     </aside>
   );
 };
