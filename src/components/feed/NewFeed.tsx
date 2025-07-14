@@ -13,6 +13,7 @@ import {
 import { ImageIcon, MapPin, Smile, Users, X, Camera } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { useUserStore } from '@/store/userStore';
 
 interface NewFeedModalProps {
   isOpen: boolean;
@@ -48,6 +49,9 @@ const createFeed = async (
 };
 
 export function NewFeed({ isOpen, onClose }: NewFeedModalProps) {
+  const { user } = useUserStore();
+  console.log('Current User:', user);
+
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const imagePickerRef = useRef<HTMLInputElement | null>(null);
@@ -123,7 +127,7 @@ export function NewFeed({ isOpen, onClose }: NewFeedModalProps) {
 
     setIsSubmitting(true);
     try {
-      await createFeed('TEST001', content, 'public', selectedFiles);
+      await createFeed(user?.id ?? '', content, 'public', selectedFiles);
 
       toast.success('게시물이 작성되었습니다.');
       setContent('');

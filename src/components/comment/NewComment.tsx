@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { useUserStore } from '@/store/userStore';
 
 interface CommentDialogProps {
   isOpen: boolean;
@@ -15,31 +16,35 @@ interface CommentDialogProps {
 }
 
 export function NewComment({ initialContent = '' }: CommentDialogProps) {
+  const { user} = useUserStore();
   const [content, setContent] = useState(initialContent);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { feedID } = useParams();
   const queryClient = useQueryClient();
-
+  
   const handleSubmit = async () => {
     if (!content.trim()) {
       toast.warning('댓글 내용을 입력해주세요.');
       return;
     }
-
+    
     setIsSubmitting(true);
-
+    
     try {
-      const response = await fetch(`/api/comment/${feedID}`, {
+      const response = await fetch(`http://192.168.0.42:4000/api/comment/${feedID}`, {
         method: 'POST',
+        credentials: "include",
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           content: content.trim(),
           feedID: feedID,
+          user: user?.id,
         }),
       });
-
+      console.log(user)
+      
       if (!response.ok) {
         throw new Error('댓글 전송에 실패했습니다.');
       }
