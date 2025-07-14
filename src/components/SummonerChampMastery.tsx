@@ -42,7 +42,7 @@ const SummonerChampMastery = ({ puuid }: MasteryProps) => {
     const fetchMasteries = async () => {
       try {
         const res = await fetch(
-          `http://localhost:4000/api/summoner/${puuid}/masteries`,
+          `http://192.168.0.42:4000/api/summoner/${puuid}/masteries`,
         );
         if (!res.ok) throw new Error('마스터리 정보 로딩 실패');
 

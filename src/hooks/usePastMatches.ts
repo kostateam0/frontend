@@ -22,7 +22,7 @@ export const usePastMatches = () => {
   useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/esports/past");
+        const res = await fetch("http://192.168.0.42:4000/api/esports/past");
         const data: Match[] = await res.json();
         setMatches(data);
       } catch (err) {

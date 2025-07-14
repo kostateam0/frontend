@@ -50,7 +50,7 @@ export default function FeedDetailPage() {
   useEffect(() => {
     const fetchFeed = async () => {
       try {
-        const res = await fetch(`http://localhost:4000/api/feed/${feedID}`, {
+        const res = await fetch(`http://192.168.0.42:4000/api/feed/${feedID}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

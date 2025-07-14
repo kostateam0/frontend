@@ -7,7 +7,7 @@ import type { Feed } from '@/types/feed';
 
 // ✅ GET 함수에 반환 타입 명시
 export const getFeeds = async (): Promise<{ data: Feed[] }> => {
-  const response = await fetch(`http://localhost:4000/api/feed`, {
+  const response = await fetch(`http://192.168.0.42:4000/api/feed`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

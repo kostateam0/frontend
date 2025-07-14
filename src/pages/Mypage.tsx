@@ -41,7 +41,7 @@ const Mypage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch("http://localhost:4000/authkit/user/profile", {
+        const res = await fetch("http://192.168.0.42:4000/authkit/user/profile", {
           method: "GET",
           credentials: "include",
           headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
@@ -62,7 +62,7 @@ const Mypage = () => {
   const handleAccountDelete = async () => {
     if (!confirm("정말로 탈퇴하시겠습니까?")) return;
     try {
-      const res = await fetch("http://localhost:4000/authkit/user/delete", {
+      const res = await fetch("http://192.168.0.42:4000/authkit/user/delete", {
         method: "DELETE",
         credentials: "include",
       });
@@ -77,7 +77,7 @@ const Mypage = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:4000/authkit/user/logout", {
+      await fetch("http://192.168.0.42:4000/authkit/user/logout", {
         method: "POST",
         credentials: "include",
       });
@@ -90,7 +90,7 @@ const Mypage = () => {
 
   const handleSaveName = async () => {
     try {
-      const res = await fetch("http://localhost:4000/authkit/user/profile", {
+      const res = await fetch("http://192.168.0.42:4000/authkit/user/profile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

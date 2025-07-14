@@ -14,7 +14,7 @@ import {
 
 const fetchLeaderBoard = async () => {
   const response = await fetch(
-    'http://localhost:4000/api/lol/leaderboard/load',
+    'http://192.168.0.42:4000/api/lol/leaderboard/load',
   );
   if (!response.ok) {
     throw new Error('Network response was not ok');

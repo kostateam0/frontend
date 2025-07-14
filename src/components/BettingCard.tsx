@@ -18,7 +18,7 @@ const BettingCard = ({ match }: { match: Match }) => {
   const [stats, setStats] = useState<{ blue: number; red: number }>({ blue: 0, red: 0 });
 
   useEffect(() => {
-    fetch(`http://localhost:4000/api/bet/stats/${match.matchId}`)
+    fetch(`http://192.168.0.42:4000/api/bet/stats/${match.matchId}`)
       .then((res) => res.json())
       .then(setStats)
       .catch((err) => console.error("베팅 통계 오류:", err));
@@ -35,7 +35,7 @@ const BettingCard = ({ match }: { match: Match }) => {
     }
 
     try {
-      const res = await fetch("http://localhost:4000/api/bet", {
+      const res = await fetch("http://192.168.0.42:4000/api/bet", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -48,7 +48,7 @@ const BettingCard = ({ match }: { match: Match }) => {
       console.log("✅", result.message);
 
       // 갱신
-      const updatedStats = await fetch(`http://localhost:4000/api/bet/stats/${match.matchId}`).then((r) => r.json());
+      const updatedStats = await fetch(`http://192.168.0.42:4000/api/bet/stats/${match.matchId}`).then((r) => r.json());
       setStats(updatedStats);
     } catch (err: any) {
       console.error("❌ 베팅 에러:", err);

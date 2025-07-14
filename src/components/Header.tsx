@@ -8,7 +8,7 @@ const Header = () => {
   const [user, setUser] = useState<{ email: string } | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:4000/auth/me", {
+    fetch("http://192.168.0.42:4000/:4000/auth/me", {
       credentials: "include",
     })
       .then(async (res) => {
@@ -20,7 +20,7 @@ const Header = () => {
   }, []);
 
   const handleLogout = async () => {
-    await fetch("http://localhost:4000/auth/logout", {
+    await fetch("http://192.168.0.42:4000/:4000/auth/logout", {
       method: "POST",
       credentials: "include",
     });

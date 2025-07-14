@@ -20,7 +20,7 @@ export const useUpcomingMatches = () => {
   useEffect(() => {
     const fetchMatches = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/esports/upcoming");
+        const res = await fetch("http://192.168.0.42:4000/api/esports/upcoming");
         const data = await res.json();
         setMatches(data);
       } catch (err) {

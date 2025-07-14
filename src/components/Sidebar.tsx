@@ -10,7 +10,7 @@ export default function Sidebar() {
   // const [user, setUser] = useState<{ email: string } | null>(null);
 
   // useEffect(() => {
-  //   fetch('http://localhost:4000/auth/me', { credentials: 'include' })
+  //   fetch('http://192.168.0.42:4000/auth/me', { credentials: 'include' })
   //     .then(async (r) => (r.ok ? setUser(await r.json()) : setUser(null)))
   //     .catch(() => setUser(null));
   // }, []);

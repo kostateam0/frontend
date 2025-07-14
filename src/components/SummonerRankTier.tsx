@@ -27,7 +27,7 @@ const SummonerRankTier = ({ puuid }: RankTierProps) => {
     const fetchRank = async () => {
       try {
         const res = await fetch(
-          `http://localhost:4000/api/summoner/${puuid}/summonerRank`,
+          `http://192.168.0.42:4000/api/summoner/${puuid}/summonerRank`,
         );
         if (!res.ok) throw new Error('랭크 정보 로딩 실패');
         const data = await res.json();

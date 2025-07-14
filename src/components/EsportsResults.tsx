@@ -32,7 +32,7 @@ type MatchResult = {
 };
 
 const fetchGameResults = async (): Promise<MatchResult[]> => {
-  const res = await fetch('http://localhost:4000/api/esports/gameResults');
+  const res = await fetch('http://192.168.0.42:4000/api/esports/gameResults');
   if (!res.ok) throw new Error('경기 결과를 불러오지 못했습니다.');
   return res.json();
 };

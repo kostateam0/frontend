@@ -47,7 +47,7 @@ const EsportsTeams: React.FC = () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `http://localhost:4000/api/esports/roster?league=${encodeURIComponent(league)}&season=${encodeURIComponent(season)}`,
+          `http://192.168.0.42:4000/api/esports/roster?league=${encodeURIComponent(league)}&season=${encodeURIComponent(season)}`,
         );
         if (!res.ok) throw new Error('로스터 데이터를 불러오지 못했습니다.');
         const data = await res.json();

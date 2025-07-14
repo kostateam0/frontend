@@ -34,7 +34,7 @@ const createFeed = async (
     formData.append(`images`, file); // 'images'는 서버에서 받을 필드명
   });
 
-  const response = await fetch('/api/feed', {
+  const response = await fetch('http://192.168.0.42:4000/api/feed', {
     method: 'POST',
     credentials: 'include',
     body: formData,

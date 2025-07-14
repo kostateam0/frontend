@@ -1,15 +1,20 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "@/store/userStore";
+
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const { setUser } = useUserStore(); // ✅ 추가
+
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const res = await fetch("http://localhost:4000/authkit/auth/login", {
+      const res = await fetch("http://192.168.0.42:4000/authkit/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -18,8 +23,12 @@ const LoginPage = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      const text = await res.text();
-      if (!res.ok) throw new Error(`로그인 실패: ${text}`);
+      const json = await res.json();
+      console.log(json)
+      if (!res.ok) throw new Error(`로그인 실패: ${JSON.stringify(json)}`);
+      setUser(json.user, json.accessToken);
+      console.log(json.user, json.accessToken);
+      alert("로그인 성공!");
 
       navigate("/mypage"); // ✅ Electron에서도 안전하게 작동
     } catch (err) {
@@ -29,11 +38,11 @@ const LoginPage = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:4000/authkit/auth/google";
+    window.location.href = "http://192.168.0.42:4000/authkit/auth/google";
   };
 
   const handleNaverLogin = () => {
-    window.location.href = "http://localhost:4000/authkit/auth/naver";
+    window.location.href = "http://192.168.0.42:4000/authkit/auth/naver";
   };
 
   return (
@@ -92,7 +101,7 @@ const LoginPage = () => {
           </div>
 
           <div className="text-center pt-4 text-xs">
-            <p>계정이 없으신가요? <a href="/register" className="underline">회원가입 하기</a></p>
+            <p>계정이 없으신가요? <Link to="/register" className="underline">회원가입 하기</Link></p>
           </div>
         </div>
       </div>

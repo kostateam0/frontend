@@ -8,7 +8,7 @@ export default function AuthInitializer() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:4000/authkit/auth/me", {
+        const res = await fetch("http://192.168.0.42:4000/authkit/auth/me", {
           credentials: "include",
         });
         if (!res.ok) return;

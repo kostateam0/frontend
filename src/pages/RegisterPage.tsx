@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
@@ -9,7 +10,7 @@ const RegisterPage = () => {
 
   const handleRegister = async () => {
     try {
-      const res = await fetch("http://localhost:4000/authkit/auth/register", {
+      const res = await fetch("http://192.168.0.42:4000/authkit/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -75,9 +76,9 @@ const RegisterPage = () => {
           <div className="text-center pt-4 text-xs">
             <p>
               이미 계정이 있으신가요?{" "}
-              <a href="/login" className="underline">
+              <Link to="/login" className="underline">
                 로그인 하기
-              </a>
+              </Link>
             </p>
           </div>
         </div>
