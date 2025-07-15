@@ -113,7 +113,7 @@ export default function LeaderBoardPage() {
         {leaderboardDate &&
           leaderboardDate.map((entry, index) => (
             <div
-              key={entry.summonerId}
+              key={entry.summonerName}
               className='grid grid-cols-12 items-center gap-4 rounded-lg bg-white p-4 shadow-sm transition-shadow hover:shadow-md'
             >
               {/* 순위 */}

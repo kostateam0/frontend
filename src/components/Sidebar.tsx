@@ -3,6 +3,7 @@ import { Trophy, Home, Search, User, Coins, Medal } from 'lucide-react';
 // import LoginButton from '@/components/LoginButton';
 // import { useEffect, useState } from 'react';
 import { NewFeedButton } from './feed/NewFeedButton';
+import DownloadExeButton from './DownloadExeButton';
 
 export default function Sidebar() {
   const nav = useNavigate();
@@ -51,6 +52,7 @@ export default function Sidebar() {
           ))}
         </nav>
         <NewFeedButton />
+        <DownloadExeButton />
         {/* <div className='mt-4'>
           {user ? (
             <LoginButton
